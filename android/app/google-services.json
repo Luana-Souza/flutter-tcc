@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "29478481205",
+    "project_id": "capicoins",
+    "storage_bucket": "capicoins.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29478481205:android:6b349c20bb6a1315e4f07c",
+        "android_client_info": {
+          "package_name": "com.example.capi_coins"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5VxEIhsoBVE7ofM63VgphUbO8qfVZato"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29478481205:android:1a8d425978195ae9e4f07c",
+        "android_client_info": {
+          "package_name": "com.ufms.tcc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5VxEIhsoBVE7ofM63VgphUbO8qfVZato"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
