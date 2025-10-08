@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tcc/models/firestore_model.dart';
 import 'package:tcc/util/validar.dart';
 
-class Atividade {
-  final String id;
+class Atividade extends FirestoreModel{
   String nome;
   String descricao;
   Timestamp? prazoEntregada;
@@ -20,11 +20,10 @@ class Atividade {
     int? credito,
     int? creditoMinimo,
     int? creditoMaximo,
-  }): id = id ?? '',
-        nome = Validar.nome(nome),
+  }): nome = Validar.nome(nome),
         descricao = Validar.descricao(descricao),
         creditoMinimo = creditoMinimo ?? 0,
-        creditoMaximo = creditoMaximo ?? 0;
+        creditoMaximo = creditoMaximo ?? 0, super (id: id);
 
   Map <String, dynamic> toMap(){
     return {

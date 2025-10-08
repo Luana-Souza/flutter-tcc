@@ -12,8 +12,6 @@ part 'tela_login_back.g.dart';
 class TelaLoginBack = _TelaLoginBack with _$TelaLoginBack;
 
 abstract class _TelaLoginBack with Store{
-  // var _alunoService = AlunoService();
-  // var _professorService = ProfessorService();
   final authService = GetIt.I<AuthService>();
   final usuarioService = GetIt.I<UsuarioService>();
 

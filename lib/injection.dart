@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:tcc/service/aluno_service.dart';
 import 'package:tcc/service/auth_service.dart';
+import 'package:tcc/service/disciplina_service.dart';
 import 'package:tcc/service/professor_service.dart';
 import 'package:tcc/service/usuarioService.dart';
 
@@ -18,5 +19,6 @@ Future<void> setupInjection() async{
   getIt.registerSingleton<AlunoService>(AlunoService());
   getIt.registerSingleton<ProfessorService>(ProfessorService());
   getIt.registerSingleton<UsuarioService>(UsuarioService());
+  getIt.registerSingleton<DisciplinaService>(DisciplinaService());
 
 }

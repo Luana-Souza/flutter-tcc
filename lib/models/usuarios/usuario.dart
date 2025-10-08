@@ -1,21 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tcc/models/firestore_model.dart';
 import 'package:tcc/models/usuarios/tipo_usuario.dart';
 import '../../util/validar.dart';
 
-abstract class Usuario {
-  final String id;
+abstract class Usuario extends FirestoreModel{
   String _nome;
   String _sobrenomne;
   String _email;
   final Timestamp criado_em;
 
   Usuario({
-    String? id,
+    super.id,
     required String nome,
     required String sobrenome,
     required String email,
     required this.criado_em,
-}) : id = id ?? '',
+}) :
   _nome = Validar.nome(nome),
   _sobrenomne = Validar.sobrenome(sobrenome),
   _email = Validar.email(email);

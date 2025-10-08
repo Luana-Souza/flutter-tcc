@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tcc/models/firestore_model.dart';
 import '../models/usuarios/usuario.dart';
 
 
 typedef FromMap<T> = T Function (String id, Map<String, dynamic> data);
 
-class FirestoreRepository <T extends Usuario>{
+class FirestoreRepository <T extends FirestoreModel>{
   final CollectionReference<T> collection;
 
   FirestoreRepository({required String collectionPath, required FromMap<T> fromMap})
@@ -24,9 +25,9 @@ class FirestoreRepository <T extends Usuario>{
   }
 
   Future<String> save(T model) async {
-    if (model.id.isEmpty) return await _add(model);
+    if (model.id == null || model.id!.isEmpty) return await _add(model);
     await _update(model);
-    return model.id;
+    return model.id!;
   }
 
   Future<void> delete(String id) async {

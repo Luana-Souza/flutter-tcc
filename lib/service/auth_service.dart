@@ -38,7 +38,7 @@ class AuthService{
         await user.updateDisplayName(name);
         await user.reload();
       }
-      return _auth.currentUser;;
+      return _auth.currentUser;
     } on FirebaseAuthException catch(e){
       throw _handleAuthException(e);
     }

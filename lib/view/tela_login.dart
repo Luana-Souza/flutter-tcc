@@ -1,15 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc/view/tela_login_back.dart';
-
 import '../Widget/auth_form.dart';
-import '../models/usuarios/aluno.dart';
-import '../models/usuarios/professor.dart';
 import '../models/usuarios/tipo_usuario.dart';
-import '../service/aluno_service.dart';
-import '../service/auth_service.dart';
-import '../service/professor_service.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 class TelaLogin extends StatefulWidget {
@@ -21,19 +14,25 @@ class TelaLogin extends StatefulWidget {
 final _formKey = GlobalKey<FormState>();
 bool isLogin = true;
 
-final _emailController = TextEditingController();
-final _senhaController = TextEditingController();
-final _confirmarSenhaController = TextEditingController();
-final _nomeController = TextEditingController();
-final _sobrenomeController = TextEditingController();
-final _tipoUsuarioController = TextEditingController();
+
 
 
 
 class _TelaLoginState extends State<TelaLogin> {
-  bool entrar = true;
 
-  final viewModel = TelaLoginBack();
+  late TelaLoginBack viewModel;
+  final _emailController = TextEditingController();
+  final _senhaController = TextEditingController();
+  final _confirmarSenhaController = TextEditingController();
+  final _nomeController = TextEditingController();
+  final _sobrenomeController = TextEditingController();
+  final _tipoUsuarioController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    viewModel = TelaLoginBack();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +64,10 @@ class _TelaLoginState extends State<TelaLogin> {
                         Observer(
                           builder: (_) => AuthForm(
                             formKey: _formKey,
-                            isLogin: viewModel.isLogin, // vindo do ViewModel
-                            tipoUsuarioRadio: viewModel.tipoUsuarioRadio, // também do ViewModel
+                            isLogin: viewModel.isLogin,
+                            tipoUsuarioRadio: viewModel.tipoUsuarioRadio,
                             onTipoUsuarioChanged: (TipoUsuario? value) {
-                              if (value != null) viewModel.setTipoUsuario(value); // atualiza via @action
+                              if (value != null) viewModel.setTipoUsuario(value);
                             },
                             emailController: _emailController,
                             senhaController: _senhaController,
@@ -112,7 +111,6 @@ class _TelaLoginState extends State<TelaLogin> {
                             child: Text(viewModel.isLogin ? "Entrar" : "Cadastrar"),
                           ),
                         ),
-
                         Observer(
                           builder: (_) => TextButton(
                             onPressed: viewModel.alternarModo,

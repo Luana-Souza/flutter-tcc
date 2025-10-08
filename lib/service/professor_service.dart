@@ -48,7 +48,7 @@ class ProfessorService {
     final user = _authService.currentUser;
     if (user != null && user.uid == professor.id) {
       await _authService.deleteAccount();
-      await _professorRepository.delete(professor.id);
+      await _professorRepository.delete(professor.id!);
     }
   }
 

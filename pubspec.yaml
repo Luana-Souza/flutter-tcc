@@ -44,6 +44,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  test: any
+  mockito: any
   build_runner: ^2.5.4
   mobx_codegen: ^2.7.1
 

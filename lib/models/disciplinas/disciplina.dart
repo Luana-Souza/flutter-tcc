@@ -1,9 +1,9 @@
 import '../../util/validar.dart';
+import '../firestore_model.dart';
 import 'atividade.dart';
 import 'avaliacao.dart';
 
-class Disciplina{
-  final String id;
+class Disciplina extends FirestoreModel{
   final String professorId;
   final List<String> alunosIds;
   final String nome;
@@ -12,7 +12,7 @@ class Disciplina{
   final List<Atividade> atividades;
   final List<Avaliacao> avaliacoes;
 
-  Disciplina({
+  Disciplina( {
     String? id,
     required this.professorId,
     List<String>? alunosIds,
@@ -21,14 +21,13 @@ class Disciplina{
     required  String instituicao,
     List<Atividade>? atividades,
     List<Avaliacao>? avaliacoes,
-  })  : id = id ?? '',
-        nome = Validar.nome(nome),
+  })  : nome = Validar.nome(nome),
         turma = Validar.turma(turma),
         instituicao = Validar.instituicao(instituicao),
         alunosIds = alunosIds ?? [],
         atividades = atividades ?? [],
-        avaliacoes = avaliacoes ?? [];
-
+        avaliacoes = avaliacoes ?? [], super(id: id);
+  @override
   Map<String, dynamic> toMap(){
     return {
       'id': id,
@@ -41,7 +40,7 @@ class Disciplina{
       'avaliacoes': avaliacoes.map((avaliacao) => avaliacao.toMap()).toList(),
     };
   }
-  factory Disciplina.fromMap(Map<String, dynamic> map){
+  factory Disciplina.fromMap(String id, Map<String, dynamic> map){
     return Disciplina(
       id: map['id'] ?? '',
       professorId: map['professorId'] ?? '',
@@ -50,11 +49,13 @@ class Disciplina{
       turma: map['turma'] ?? 0,
       instituicao: map['instituicao'] ?? '',
       atividades: map['atividades'] != null
-      ? List<Atividade>.from((map['atividades'] as List).map((a) => Atividade.fromMap(a)))
-      : [],
+          ? List<Atividade>.from(
+          (map['atividades'] as List).map((a) => Atividade.fromMap(a)))
+          : [],
       avaliacoes: map['avaliacoes'] != null
-      ? List<Avaliacao>.from((map['avaliacoes'] as List).map((a) => Avaliacao.fromMap(a)))
-      : [],
+          ? List<Avaliacao>.from(
+          (map['avaliacoes'] as List).map((a) => Avaliacao.fromMap(a)))
+          : [],
     );
   }
 }

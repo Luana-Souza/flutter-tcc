@@ -37,7 +37,7 @@ class AuthForm extends StatelessWidget {
       key: formKey,
       child: Column(
         children: [
-          FormTextField(label: "Email", controller: emailController),
+          FormTextField(label: "Email", controller: emailController, ),
           SizedBox(height: 16),
           FormTextField(label: "Senha", controller: senhaController, isPassword: true),
 
@@ -75,6 +75,7 @@ class AuthForm extends StatelessWidget {
                   label: tipoUsuarioRadio == TipoUsuario.aluno ? 'RGA' : 'SIAPE',
                   controller: tipoUsuarioController,
                   validator: (value) {
+                    if (isLogin) return null;
                     if (tipoUsuarioRadio == null) {
                       return 'Selecione um tipo de usuário';
                     }

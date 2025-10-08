@@ -10,7 +10,6 @@ class UsuarioService {
   final _alunoService = GetIt.I<AlunoService>();
   final _professorService = GetIt.I<ProfessorService>();
 
-  // tipo está sendo passado, mas não é assim que funciona
   Future<dynamic> login(String email, String senha, String tipo) async {
     if (tipo == 'aluno') {
       return await _alunoService.entrar(email, senha);
@@ -49,5 +48,9 @@ class UsuarioService {
       );
       await _professorService.criarConta(professor, senha);
     }
+  }
+  Future<void> sair() async {
+    await _alunoService.sair();
+    await _professorService.sair();
   }
 }

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tcc/models/firestore_model.dart';
 
 import '../../util/validar.dart';
 
-class Avaliacao{
-  final String id;
+class Avaliacao extends FirestoreModel{
   String nome;
   String sigla;
   Timestamp data;
@@ -15,10 +15,9 @@ class Avaliacao{
     required String sigla,
     required this.data,
     int? pontuacao,
-})  : id = id ?? '',
-      nome = Validar.nome(nome),
+})  : nome = Validar.nome(nome),
       sigla = Validar.sigla(sigla),
-      pontuacao = pontuacao;
+      pontuacao = pontuacao, super (id: id);
 
   Map<String, dynamic> toMap(){
     return{
