@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+enum TipoCampo { email, senha, nome, sobrenome, rga, siape, confirmarSenha }
 class Validar{
 
   static String _campoString(String nomeCampo, String campo, [int? min, int? max]){
@@ -82,5 +82,65 @@ class Validar{
   }
   static int credito(int credito){
     return _campoNumerico("Crédito", credito, 2);
+  }
+  static String senha(String senha){
+    senha = senha.trim();
+    if(senha.isEmpty) {
+      throw Exception('Senha não pode ser vazia');
+    }
+    if(senha.length < 8) {
+      throw Exception('Senha deve ter no mínimo 8 caracteres');
+    }
+    if(!RegExp(r'^(?=.*[a-zÀ-ÿ])(?=.*[A-ZÀ-Ÿ])(?=.*\d)(?=.*[^\w\s])[A-Za-zÀ-ÿ\d\W]{8,50}$').hasMatch(senha)) {
+      throw Exception('Senha deve conter ao menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial');
+    }
+    return senha;
+  }
+
+  static String? formulario(TipoCampo tipo, String? valor, {String? valorExtra}) {
+    if (valor == null || valor.trim().isEmpty) {
+      if (tipo == TipoCampo.confirmarSenha){
+        return 'Confirme sua senha.';
+      }
+      String nomeDoCampo = tipo.name;
+      nomeDoCampo = nomeDoCampo[0].toUpperCase() + nomeDoCampo.substring(1);
+      if (tipo == TipoCampo.rga || tipo == TipoCampo.siape) {
+        return 'O campo ${tipo.name.toUpperCase()} é obrigatório.';
+      }
+
+      return 'O campo $nomeDoCampo é obrigatório.';
+    }
+
+    try {
+      switch (tipo) {
+        case TipoCampo.email:
+          email(valor);
+          break;
+        case TipoCampo.senha:
+          senha(valor);
+          break;
+        case TipoCampo.confirmarSenha:
+          if (valor != valorExtra) {
+            return 'As senhas não coincidem.';
+          }
+          break;
+        case TipoCampo.nome:
+          nome(valor);
+          break;
+        case TipoCampo.sobrenome:
+          sobrenome(valor);
+          break;
+        case TipoCampo.rga:
+          rga(valor);
+          break;
+        case TipoCampo.siape:
+          siape(valor);
+          break;
+      }
+    } on Exception catch (e) {
+      return e.toString().replaceFirst('Exception: ', '');
+    }
+
+    return null;
   }
 }

@@ -18,6 +18,8 @@ class AuthForm extends StatelessWidget {
   final TextEditingController sobrenomeController;
   final TextEditingController tipoUsuarioController;
 
+  final AutovalidateMode autovalidateMode;
+
   const AuthForm({
     required this.formKey,
     required this.isLogin,
@@ -29,26 +31,27 @@ class AuthForm extends StatelessWidget {
     required this.nomeController,
     required this.sobrenomeController,
     required this.tipoUsuarioController,
+    required this.autovalidateMode,
   });
 
   @override
   Widget build(BuildContext context) {
     return Form(
       key: formKey,
+      autovalidateMode: autovalidateMode,
       child: Column(
         children: [
-          FormTextField(label: "Email", controller: emailController, ),
+          FormTextField(label: "Email", controller: emailController, validator: (value) => Validar.formulario(TipoCampo.email, value)),
           SizedBox(height: 16),
-          FormTextField(label: "Senha", controller: senhaController, isPassword: true),
+          FormTextField(label: "Senha", controller: senhaController, isPassword: true, validator: (value) => Validar.formulario(TipoCampo.senha, value)),
 
-          // Campos extras para cadastro
           if (!isLogin) ...[
             SizedBox(height: 16),
-            FormTextField(label: "Confirmar senha", controller: confirmarSenhaController, isPassword: true),
+            FormTextField(label: "Confirmar senha", controller: confirmarSenhaController, isPassword: true, validator: (value) => Validar.formulario(TipoCampo.confirmarSenha, senhaController.text)),
             SizedBox(height: 16),
-            FormTextField(label: "Nome", controller: nomeController),
+            FormTextField(label: "Nome", controller: nomeController, validator: (value) => Validar.formulario(TipoCampo.nome, value)),
             SizedBox(height: 16),
-            FormTextField(label: "Sobrenome", controller: sobrenomeController),
+            FormTextField(label: "Sobrenome", controller: sobrenomeController, validator: (value) => Validar.formulario(TipoCampo.sobrenome, value)),
             SizedBox(height: 16),
 
             Column(
@@ -76,13 +79,9 @@ class AuthForm extends StatelessWidget {
                   controller: tipoUsuarioController,
                   validator: (value) {
                     if (isLogin) return null;
-                    if (tipoUsuarioRadio == null) {
-                      return 'Selecione um tipo de usuário';
-                    }
-                    if (value == null || value.isEmpty) {
-                      return 'Informe seu ${tipoUsuarioRadio == TipoUsuario.aluno ? 'RGA' : 'SIAPE'}';
-                    }
-                    return null;
+                    return tipoUsuarioRadio == TipoUsuario.aluno
+                        ? Validar.formulario(TipoCampo.rga, value)
+                        : Validar.formulario(TipoCampo.siape, value);
                   },
                 ),
               ],

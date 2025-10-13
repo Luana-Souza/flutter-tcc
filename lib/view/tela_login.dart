@@ -11,7 +11,7 @@ class TelaLogin extends StatefulWidget {
   @override
   State<TelaLogin> createState() => _TelaLoginState();
 }
-final _formKey = GlobalKey<FormState>();
+
 bool isLogin = true;
 
 
@@ -19,7 +19,7 @@ bool isLogin = true;
 
 
 class _TelaLoginState extends State<TelaLogin> {
-
+  final _formKey = GlobalKey<FormState>();
   late TelaLoginBack viewModel;
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
@@ -28,6 +28,7 @@ class _TelaLoginState extends State<TelaLogin> {
   final _sobrenomeController = TextEditingController();
   final _tipoUsuarioController = TextEditingController();
 
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   @override
   void initState() {
     super.initState();
@@ -63,6 +64,7 @@ class _TelaLoginState extends State<TelaLogin> {
                         Image.asset("assets/logo.png"),
                         Observer(
                           builder: (_) => AuthForm(
+                            autovalidateMode: _autovalidateMode,
                             formKey: _formKey,
                             isLogin: viewModel.isLogin,
                             tipoUsuarioRadio: viewModel.tipoUsuarioRadio,
@@ -84,8 +86,19 @@ class _TelaLoginState extends State<TelaLogin> {
                         Observer(
                           builder: (_) => ElevatedButton(
                             onPressed: viewModel.isLoading ? null : () async {
-                              if (_formKey.currentState!.validate()) {
-                                final email = _emailController.text.trim();
+                              final isValid = _formKey.currentState!.validate();
+
+                              if (!isValid) {
+                                // Se o formulário NÃO for válido...
+                                setState(() {
+                                  // ...mude o modo para que os erros apareçam...
+                                  _autovalidateMode = AutovalidateMode.onUserInteraction;
+                                });
+                                // ...e pare a execução aqui.
+                                return;
+                              }
+
+                              final email = _emailController.text.trim();
                                 final senha = _senhaController.text.trim();
 
                                 if (viewModel.isLogin) {
@@ -106,7 +119,7 @@ class _TelaLoginState extends State<TelaLogin> {
                                     tipo,
                                   );
                                 }
-                              }
+
                             },
                             child: Text(viewModel.isLogin ? "Entrar" : "Cadastrar"),
                           ),
@@ -116,7 +129,7 @@ class _TelaLoginState extends State<TelaLogin> {
                             onPressed: viewModel.alternarModo,
                             child: Text(viewModel.isLogin
                                 ? "Não tem uma conta? Cadastre-se"
-                                : "Já tem uma conta? entre"),
+                                : "Já tem uma conta? Entre"),
                           ),
                         )
                       ],

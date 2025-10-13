@@ -12,7 +12,7 @@ import '../service/auth_service.dart';
 import '../service/professor_service.dart';
 
 class Home extends StatelessWidget {
-  static const String HOME = '/';
+  //static const String HOME = '/';
   Future<Usuario?> obterUsuarioAtual() async {
     final user = AuthService().currentUser;
     if (user == null) return null;
