@@ -1,101 +1,133 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tcc/my_app.dart';
+import 'package:tcc/service/disciplina_service.dart';
+import 'package:tcc/service/usuarioService.dart';
 import 'package:tcc/view/tela_login.dart';
-
-import '../models/usuarios/aluno.dart';
-import '../models/usuarios/professor.dart';
-import '../models/usuarios/tipo_usuario.dart';
-import '../models/usuarios/usuario.dart';
-import '../service/aluno_service.dart';
+import '../Widget/disciplina_list_tile.dart';
+import '../Widget/inicio_modal.dart';
+import '../models/disciplinas/disciplina.dart';
+import 'package:flutter_mobx/flutter_mobx.dart'; // 1. Importar o flutter_mobx
+import 'package:get_it/get_it.dart';
 import '../service/auth_service.dart';
-import '../service/professor_service.dart';
+import 'home_back.dart';
+class Home extends StatefulWidget {
+   Home({super.key});
 
-class Home extends StatelessWidget {
-  //static const String HOME = '/';
-  Future<Usuario?> obterUsuarioAtual() async {
-    final user = AuthService().currentUser;
-    if (user == null) return null;
+  @override
+  State<Home> createState() => _HomeState();
+}
 
-    final doc = await FirebaseFirestore.instance.collection('usuarios').doc(user.uid).get();
-    final data = doc.data();
-    if (data == null) return null;
-
-    final tipo = data['tipo'];
-    if (tipo == 'aluno') {
-      return Aluno.fromMap(doc.id, data);
-    } else if (tipo == 'professor') {
-      return Professor.fromMap(doc.id, data);
-    }
-    return null;
-  }
-  Future<void> logoutUsuario(Usuario? usuario) async {
-    if (usuario == null) return;
-    final tipo = usuario.getTipo();
-    if (tipo == TipoUsuario.professor) {
-      await ProfessorService().sair();
-    } else if (tipo == TipoUsuario.aluno) {
-      await AlunoService().sair();
-    }
+class _HomeState extends State<Home> {
+  final _back = HomeBack();
+  final _authService = GetIt.I<AuthService>();
+  // final DisciplinaService _disciplina = DisciplinaService();
+  // final UsuarioService _usuario = UsuarioService();
+  @override
+  void initState() {
+    super.initState();
+    _back.buscarDisciplinas();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: true,
-      title: 'CapiCoins',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
-          title: Text('CapiCoins Home'),
-          actions: [
-            IconButton(icon: Icon(Icons.add),
-                onPressed:() {
-              Navigator.of(context).pushNamed(MyApp.LOGIN);
-            }),
-          ],
+          title: Text('Minhas Disciplinas'),
         ),
         drawer: Drawer(
-            child: ListView(children: [
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              // 6. Usar Observer para que o Drawer se atualize se o usuário mudar
+              Observer(builder: (_) {
+                final user = _authService.currentUser;
+                if (user == null) return const SizedBox.shrink(); // Não mostra nada se não houver usuário
 
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Color(0xFF0A6D92),
-                ),
-                child: Text(
-                  "Olá, ${AuthService().currentUser?.displayName ?? 'Usuário'}",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                return UserAccountsDrawerHeader(
+                  decoration: BoxDecoration(color: Colors.teal),
+                  accountName: Text(
+                    (user.displayName?.isNotEmpty ?? false)
+                        ? user.displayName!
+                        : 'Usuário',
                   ),
-                ),
-
+                  accountEmail: Text(user.email ?? 'email@dominio.com'),
+                  currentAccountPicture: CircleAvatar(
+                    backgroundImage: AssetImage('assets/9440461.jpg'),
+                  ),
+                );
+              }),
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text("Perfil"),
+                onTap: () => Navigator.pop(context),
               ),
               ListTile(
                 leading: Icon(Icons.home),
                 title: Text("Home"),
-                onTap: () {
-                  Navigator.pop(context);
-                },
+                onTap: () => Navigator.pop(context),
               ),
+              const Divider(),
               ListTile(
                 leading: Icon(Icons.logout),
                 title: Text("Sair"),
                 onTap: () async {
-                  print("Sair do usuário");
-                  await logoutUsuario(await obterUsuarioAtual());
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => TelaLogin()),
+                  // 7. Chamar o método de logout centralizado
+                  await _authService.signOut(); // Usando o método correto do AuthService
+                  if (mounted) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => TelaLogin()),
+                          (route) => false,
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          mostrarModalInicio(context);
+        },
+        ),
+      body: Observer(
+        builder: (_) {
+          return StreamBuilder<List<Disciplina>>(
+            stream: _back.listaDisciplinas,
+            builder: (context, snapshot) {
+
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return Center(child: Text('Erro ao carregar as disciplinas.'));
+              }
+
+              final List<Disciplina> disciplinas = snapshot.data ?? [];
+              if (disciplinas.isEmpty) {
+                return Center(child: Text('Nenhuma disciplina encontrada.'));
+                // caso o usuario seja aluno ou professor exibir um texto diferente para adicionar a disciplina
+
+              }
+
+              return ListView.builder(
+                itemCount: disciplinas.length,
+                itemBuilder: (context, index) {
+                  final disciplina = disciplinas[index];
+                  return DisciplinaListTile(
+                    disciplina: disciplina,
+                    onTap: () {
+                      _back.irParaDisciplina(context, disciplina);
+                    },
                   );
-                },),
-            ],)
-        ),
-        body: Center(
-          child: Text('Welcome to CapiCoins!'),
-        ),
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }

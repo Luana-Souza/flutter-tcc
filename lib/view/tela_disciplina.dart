@@ -25,21 +25,23 @@ class TelaDisciplina extends StatelessWidget {
       id: '00',
       nome: 'Atividade 01',
       descricao: 'Entregar o trabalho de matemática',
-      prazoDeEntrega: Timestamp.fromDate(DateTime.now().add(Duration(days: 7))),
-      prazoEntregada: null,
+      dataDeEnvio: DateTime.now(),
+      dataDeEntrega: DateTime.now().add(Duration(days: 7)),
       creditoMinimo: 10,
       creditoMaximo: 20,
       credito: 15,
+      disciplinaId: '0000',
     ),
     Atividade(
       id: '01',
       nome: 'Atividade 02',
       descricao: 'Entregar o trabalho de português',
-      prazoDeEntrega: Timestamp.fromDate(DateTime.now().add(Duration(days: 7))),
-      prazoEntregada: null,
+      dataDeEnvio: DateTime.now(),
+      dataDeEntrega: DateTime.now().add(Duration(days: 7)),
       creditoMinimo: 10,
       creditoMaximo: 20,
       credito: 15,
+      disciplinaId: '0001',
     )
 
   ];
@@ -48,15 +50,17 @@ class TelaDisciplina extends StatelessWidget {
       id: '001',
       nome: 'Prova 01',
       sigla: 'P01',
-      data: Timestamp.fromDate(DateTime.now().add(Duration(days: 7))),
+      data: DateTime.now(),
       pontuacao: null,
+      disciplinaId: '0002',
     ),
     Avaliacao(
       id: '002',
       nome: 'Prova 02',
       sigla: 'P02',
-      data: Timestamp.fromDate(DateTime.now().add(Duration(days: 7))),
+      data: DateTime.now(),
       pontuacao: null,
+      disciplinaId: '002',
     )
 
   ];
@@ -114,7 +118,7 @@ class TelaDisciplina extends StatelessWidget {
                       leading: Icon(Icons.assignment),
                       title: Text(atividade.nome) ,
                       subtitle: Text('${atividade.descricao} \n'
-                          'Data de Entrega: ${atividade.prazoDeEntrega.toDate().toLocal().toString().split(' ')[0]}'),
+                          'Data de Entrega: ${atividade.dataDeEnvio.toString().split(' ')[0]}'),
                       trailing: IconButton(
                         icon: Icon(
                           Icons.delete,
@@ -156,7 +160,7 @@ class TelaDisciplina extends StatelessWidget {
                       contentPadding: EdgeInsets.zero,
                       leading: Icon(Icons.description),
                       title: Text(avaliacao.nome) ,
-                      subtitle: Text('${avaliacao.data.toDate().toLocal().toString().split(' ')[0]}'),
+                      subtitle: Text('${avaliacao.data.toLocal().toString().split(' ')[0]}'),
                       trailing: IconButton(
                         icon: Icon(
                           Icons.delete,

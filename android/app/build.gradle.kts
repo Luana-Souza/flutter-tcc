@@ -11,7 +11,7 @@ plugins {
 android {
     namespace = "com.ufms.tcc"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -27,10 +27,13 @@ android {
         applicationId = "com.ufms.tcc"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+       // minSdk = flutter.minSdkVersion
+        // a versão minima suportada do firebase é a 27, caso isso mude lembre de alterar tbm na linha 14 o "ndkVersion".
+        minSdk = 27
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled = true
     }
 
     buildTypes {

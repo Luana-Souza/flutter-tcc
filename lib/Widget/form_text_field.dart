@@ -30,13 +30,19 @@ class _FormTextField extends State<FormTextField> {
     return TextFormField(
       controller: widget.controller,
       decoration: InputDecoration(
-        labelText: widget.label,
-        border: OutlineInputBorder(),
+        hintText: widget.label,
+        fillColor: Colors.white,
+        filled: true,
+        contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(64) ),
         enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(64),
           borderSide: BorderSide(color: Colors.black26, width: 2),
         ),
-        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black45, width: 2) ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(64), borderSide: BorderSide(color: Colors.black45, width: 4) ),
+        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(64), borderSide: BorderSide(color: Colors.red, width: 2) ),
+        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(64), borderSide: BorderSide(color: Colors.redAccent, width: 2) ),
+       // contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         suffixIcon: widget.isPassword
             ? IconButton(
           icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),

@@ -1,12 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tcc/util/app_routes.dart';
 import 'package:tcc/view/home.dart';
 import 'package:tcc/view/tela_disciplina.dart';
 import 'package:tcc/view/tela_login.dart';
 
+import 'models/disciplinas/disciplina.dart';
+
 class MyApp extends StatelessWidget {
-  static const HOME = '/';
-  static const LOGIN = '/login';
-  static const DISCIPLINA = '/disciplina';
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,14 +16,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      routes: {
-        HOME: (context) => Home(),
-        LOGIN: (context) => TelaLogin(),
-        DISCIPLINA: (context) => TelaDisciplina(
-              disciplina: ModalRoute.of(context)!.settings.arguments as dynamic,
-            ),
-
-      }
     );
   }
 }

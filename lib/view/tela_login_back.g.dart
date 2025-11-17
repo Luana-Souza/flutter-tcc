@@ -9,6 +9,46 @@ part of 'tela_login_back.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$TelaLoginBack on _TelaLoginBack, Store {
+  late final _$listaInstituicoesAtom = Atom(
+    name: '_TelaLoginBack.listaInstituicoes',
+    context: context,
+  );
+
+  @override
+  ObservableList<Instituicao> get listaInstituicoes {
+    _$listaInstituicoesAtom.reportRead();
+    return super.listaInstituicoes;
+  }
+
+  @override
+  set listaInstituicoes(ObservableList<Instituicao> value) {
+    _$listaInstituicoesAtom.reportWrite(value, super.listaInstituicoes, () {
+      super.listaInstituicoes = value;
+    });
+  }
+
+  late final _$carregandoInstituicoesAtom = Atom(
+    name: '_TelaLoginBack.carregandoInstituicoes',
+    context: context,
+  );
+
+  @override
+  bool get carregandoInstituicoes {
+    _$carregandoInstituicoesAtom.reportRead();
+    return super.carregandoInstituicoes;
+  }
+
+  @override
+  set carregandoInstituicoes(bool value) {
+    _$carregandoInstituicoesAtom.reportWrite(
+      value,
+      super.carregandoInstituicoes,
+      () {
+        super.carregandoInstituicoes = value;
+      },
+    );
+  }
+
   late final _$isLoadingAtom = Atom(
     name: '_TelaLoginBack.isLoading',
     context: context,
@@ -63,6 +103,18 @@ mixin _$TelaLoginBack on _TelaLoginBack, Store {
     });
   }
 
+  late final _$carregarInstituicoesAsyncAction = AsyncAction(
+    '_TelaLoginBack.carregarInstituicoes',
+    context: context,
+  );
+
+  @override
+  Future<void> carregarInstituicoes() {
+    return _$carregarInstituicoesAsyncAction.run(
+      () => super.carregarInstituicoes(),
+    );
+  }
+
   late final _$loginAsyncAction = AsyncAction(
     '_TelaLoginBack.login',
     context: context,
@@ -87,6 +139,7 @@ mixin _$TelaLoginBack on _TelaLoginBack, Store {
     String senha,
     String tipoUsuario,
     String tipo,
+    String? instituicaoId,
   ) {
     return _$salvarUsuarioAsyncAction.run(
       () => super.salvarUsuario(
@@ -97,6 +150,7 @@ mixin _$TelaLoginBack on _TelaLoginBack, Store {
         senha,
         tipoUsuario,
         tipo,
+        instituicaoId,
       ),
     );
   }
@@ -133,6 +187,8 @@ mixin _$TelaLoginBack on _TelaLoginBack, Store {
   @override
   String toString() {
     return '''
+listaInstituicoes: ${listaInstituicoes},
+carregandoInstituicoes: ${carregandoInstituicoes},
 isLoading: ${isLoading},
 isLogin: ${isLogin},
 tipoUsuarioRadio: ${tipoUsuarioRadio}

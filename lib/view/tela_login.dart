@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc/view/tela_login_back.dart';
 import '../Widget/auth_form.dart';
+import '../models/instituicao.dart';
 import '../models/usuarios/tipo_usuario.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import '../service/instituicao_service.dart';
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
@@ -14,10 +16,6 @@ class TelaLogin extends StatefulWidget {
 
 bool isLogin = true;
 
-
-
-
-
 class _TelaLoginState extends State<TelaLogin> {
   final _formKey = GlobalKey<FormState>();
   late TelaLoginBack viewModel;
@@ -27,14 +25,17 @@ class _TelaLoginState extends State<TelaLogin> {
   final _nomeController = TextEditingController();
   final _sobrenomeController = TextEditingController();
   final _tipoUsuarioController = TextEditingController();
+  Instituicao? _instituicaoSelecionada;
+
 
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   @override
   void initState() {
     super.initState();
     viewModel = TelaLoginBack();
+    // Carregar instituições no initState
+    viewModel.carregarInstituicoes();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,6 +78,14 @@ class _TelaLoginState extends State<TelaLogin> {
                             nomeController: _nomeController,
                             sobrenomeController: _sobrenomeController,
                             tipoUsuarioController: _tipoUsuarioController,
+                            carregandoInstituicoes: viewModel.carregandoInstituicoes,
+                            listaInstituicoes: viewModel.listaInstituicoes,
+                            instituicaoSelecionada: _instituicaoSelecionada,
+                            onInstituicaoChanged: (Instituicao? novoValor) {
+                              setState(() {
+                                _instituicaoSelecionada = novoValor;
+                              });
+                            },
                           ),
                         ),
 
@@ -89,19 +98,25 @@ class _TelaLoginState extends State<TelaLogin> {
                               final isValid = _formKey.currentState!.validate();
 
                               if (!isValid) {
-                                // Se o formulário NÃO for válido...
                                 setState(() {
-                                  // ...mude o modo para que os erros apareçam...
                                   _autovalidateMode = AutovalidateMode.onUserInteraction;
                                 });
-                                // ...e pare a execução aqui.
                                 return;
                               }
-
+                              if (!viewModel.isLogin && _instituicaoSelecionada == null && viewModel.tipoUsuarioRadio == TipoUsuario.aluno) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Por favor, selecione uma instituição para continuar.'),
+                                    backgroundColor: Colors.orange,
+                                  ),
+                                );
+                                return;
+                              }
                               final email = _emailController.text.trim();
                                 final senha = _senhaController.text.trim();
+                              final tipoUsuario = _tipoUsuarioController.text.trim();
 
-                                if (viewModel.isLogin) {
+                              if (viewModel.isLogin) {
                                   await viewModel.login(context, email, senha);
                                 } else {
                                   final nome = _nomeController.text.trim();
@@ -117,6 +132,7 @@ class _TelaLoginState extends State<TelaLogin> {
                                     senha,
                                     tipoUsuario,
                                     tipo,
+                                    _instituicaoSelecionada?.id,
                                   );
                                 }
 

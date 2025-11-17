@@ -13,7 +13,8 @@ class Aluno extends Usuario {
     required super.email,
     required super.criado_em,
     required String rga,
-    required id
+    required id,
+    required super.instituicoesIds,
   }) : _rga = Validar.rga(rga), super(id: id);
 
   get rga => _rga;
@@ -31,6 +32,7 @@ class Aluno extends Usuario {
       'rga': _rga,
       'tipo': getTipo().name,
       'criado_em': criado_em,
+      'instituicoesIds': instituicoesIds,
     };
   }
 
@@ -42,6 +44,7 @@ class Aluno extends Usuario {
       email: map['usuarioEmail'] ?? '',
       rga: map['rga'] ?? '',
       criado_em: map['criado_em'] ?? Timestamp.now(),
+      instituicoesIds: List<String>.from(map['instituicoesIds'] ?? []),
     );
   }
   @override

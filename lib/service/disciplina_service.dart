@@ -1,38 +1,43 @@
 import 'package:get_it/get_it.dart';
 import 'package:tcc/models/disciplinas/disciplina.dart';
-import 'package:tcc/models/usuarios/professor.dart';
-import 'package:tcc/models/usuarios/tipo_usuario.dart';
 import 'package:tcc/repositories/firestore_repository.dart';
 import 'package:tcc/service/auth_service.dart';
 import 'package:tcc/service/usuarioService.dart';
 
 class DisciplinaService {
   final AuthService _authService = GetIt.I<AuthService>();
-  final UsuarioService _usuarioService = GetIt.I<UsuarioService>();
   final FirestoreRepository<Disciplina> _disciplinaRepository = FirestoreRepository<Disciplina>(
-    collectionPath: 'disciplina',
+    collectionPath: 'disciplinas',
     fromMap: Disciplina.fromMap,
   );
 
-  Future<List<Disciplina>> listarDisciplinas() async {
-    return await _disciplinaRepository.findAll();
+  Future<List<Disciplina>> listarDisciplinasDoProfessor(String professorId) async {
+    return await _disciplinaRepository.findBy('professorId', professorId);
   }
-  Future<Disciplina> criarDisciplina(Disciplina disciplina, Professor professor) async {
+
+  Future<List<Disciplina>> listarDisciplinasDoAluno(String alunoId) async {
+    return await _disciplinaRepository.findBy('alunosIds', alunoId, queryType: QueryType.arrayContains);
+  }
+
+  Future<Disciplina> criarDisciplina(Disciplina disciplina) async {
+    final professorId = _authService.currentUser?.uid;
+    if (professorId == null) {
+      throw Exception("Nenhum professor autenticado para criar a disciplina.");
+    }
 
     final novaDisciplina = Disciplina(
-      id: '',
-      professorId: professor.id!,
+      id: null,
+      professorId: professorId,
       nome: disciplina.nome,
       turma: disciplina.turma,
-      instituicao: disciplina.instituicao,
+      instituicaoId: disciplina.instituicaoId,
       alunosIds: [],
-      atividades: [],
-      avaliacoes: [],
     );
     await _disciplinaRepository.save(novaDisciplina);
 
     return novaDisciplina;
   }
+
   Future<Disciplina> matricularAluno(Disciplina disciplina, String alunoId) async {
     if (!disciplina.alunosIds.contains(alunoId)) {
       disciplina.alunosIds.add(alunoId);
@@ -40,4 +45,19 @@ class DisciplinaService {
     }
     return disciplina;
   }
+
+  Stream<List<Disciplina>> streamDisciplinasDoProfessor(String professorId) {
+    return _disciplinaRepository.findByStream('professorId', professorId);
+  }
+
+  Stream<List<Disciplina>> streamDisciplinasDoAluno(String alunoId) {
+    return _disciplinaRepository.findByStream(
+      'alunosIds',
+      alunoId,
+      queryType: QueryType.arrayContains,
+    );
+  }
+  // Future<void> arquivarDisciplina({required String idDisciplina}){
+  //   return _disciplinaRepository.collection.doc(idDisciplina).delete();
+  // }
 }

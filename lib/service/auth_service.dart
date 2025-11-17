@@ -14,6 +14,7 @@ class AuthService{
     'email-already-in-use': 'E-mail já está em uso.',
     'operation-not-allowed': 'Operação não permitida.',
     'weak-password': 'Senha muito fraca.',
+    'invalid-credential': 'Credencial inválida.',
   };
   // Retorna o usuário atualmente logado.
   User? get currentUser => _auth.currentUser;

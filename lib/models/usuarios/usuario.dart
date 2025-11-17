@@ -8,6 +8,7 @@ abstract class Usuario extends FirestoreModel{
   String _sobrenomne;
   String _email;
   final Timestamp criado_em;
+  final List<String> instituicoesIds;
 
   Usuario({
     super.id,
@@ -15,6 +16,7 @@ abstract class Usuario extends FirestoreModel{
     required String sobrenome,
     required String email,
     required this.criado_em,
+    required this.instituicoesIds
 }) :
   _nome = Validar.nome(nome),
   _sobrenomne = Validar.sobrenome(sobrenome),

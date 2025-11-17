@@ -18,7 +18,7 @@ class ProfessorService {
 
   Future<Professor> criarConta(Professor professor, String senha) async {
     final user = await _authService.signUp(
-      name: '${professor.nome} ${professor.sobrenome}',
+      name: professor.nome,
       email: professor.email,
       password: senha,
     );
@@ -30,6 +30,7 @@ class ProfessorService {
       email: professor.email,
       siape: professor.siape,
       criado_em: professor.criado_em,
+      instituicoesIds: professor.instituicoesIds,
     );
 
     await _professorRepository.save(novoProfessor);
@@ -68,5 +69,8 @@ class ProfessorService {
   bool logado(Professor professor) {
     final user = _authService.currentUser;
     return user != null && user.uid == professor.id;
+  }
+  Future<Professor?> findByUid(String uid) async {
+    return await _professorRepository.findById(uid);
   }
 }

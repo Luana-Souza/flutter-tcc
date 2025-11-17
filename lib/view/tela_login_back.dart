@@ -2,18 +2,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
+import 'package:tcc/Widget/meu_snackbar.dart';
 import 'package:tcc/my_app.dart';
+import 'package:tcc/util/app_routes.dart';
 import '../models/usuarios/tipo_usuario.dart';
 import '../service/auth_service.dart';
 import '../service/usuarioService.dart';
+import 'package:tcc/models/instituicao.dart';
+import 'package:tcc/service/instituicao_service.dart';
 
 part 'tela_login_back.g.dart';
 
 class TelaLoginBack = _TelaLoginBack with _$TelaLoginBack;
 
 abstract class _TelaLoginBack with Store{
-  final authService = GetIt.I<AuthService>();
-  final usuarioService = GetIt.I<UsuarioService>();
+  final InstituicaoService _instituicaoService = InstituicaoService();
+
+  @observable
+  ObservableList<Instituicao> listaInstituicoes = ObservableList<Instituicao>();
+
+  @observable
+  bool carregandoInstituicoes = false;
 
   @observable
   bool isLoading = false;
@@ -32,6 +41,18 @@ abstract class _TelaLoginBack with Store{
   void alternarModo() {
     isLogin = !isLogin;
   }
+  @action
+  Future<void> carregarInstituicoes() async {
+    try {
+      carregandoInstituicoes = true;
+      final instituicoes = await _instituicaoService.listarTodas();
+      listaInstituicoes.clear();
+      listaInstituicoes.addAll(instituicoes);
+    } catch (e) {
+    } finally {
+      carregandoInstituicoes = false;
+    }
+  }
 
 
 
@@ -40,7 +61,8 @@ abstract class _TelaLoginBack with Store{
   Future<void> login(BuildContext context, String email, String senha) async {
     try {
       isLoading = true;
-
+      final authService = GetIt.I<AuthService>();
+      final usuarioService = GetIt.I<UsuarioService>();
       final firebaseUser = await authService.signIn(email: email, password: senha);
       if (firebaseUser != null) {
         final doc = await FirebaseFirestore.instance
@@ -56,10 +78,10 @@ abstract class _TelaLoginBack with Store{
           return;
         }
 
-        _mensagem(context, 'Usuário não encontrado no banco de dados.');
+        mostrarSnackBar(context: context, texto: 'Usuário não encontrado no banco de dados.');
       }
     } catch (e) {
-      _mensagem(context, 'Erro ao fazer login: $e');
+      mostrarSnackBar(context: context, texto:'Erro ao fazer login: $e');
     } finally {
       isLoading = false;
     }
@@ -77,10 +99,12 @@ abstract class _TelaLoginBack with Store{
       String senha,
       String tipoUsuario,
       String tipo,
+      String? instituicaoId,
       ) async {
     try {
       isLoading = true;
-
+      final authService = GetIt.I<AuthService>();
+      final usuarioService = GetIt.I<UsuarioService>();
       await usuarioService.salvarUsuario(
         nome: nome,
         sobrenome: sobrenome,
@@ -88,12 +112,13 @@ abstract class _TelaLoginBack with Store{
         senha: senha,
         tipoUsuario: tipoUsuario,
         tipo: tipo,
+        instituicaoId: instituicaoId,
       );
 
-      _mensagem(context, 'Conta criada com sucesso!');
-      irParaHome(context);
+      mostrarSnackBar(context: context, texto: 'Conta criada com sucesso!', isErro: false);
+      alternarModo();
     } catch (e) {
-      _mensagem(context, 'Erro ao salvar usuário: $e');
+      mostrarSnackBar(context: context, texto: 'Erro ao salvar usuário: $e');
     } finally {
       isLoading = false;
     }
@@ -101,11 +126,12 @@ abstract class _TelaLoginBack with Store{
 
 
   irParaHome(BuildContext context){
-    Navigator.of(context).pushNamed(MyApp.HOME);
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      AppRoutes.HOME,
+          (route) => false,
+    );
   }
-  void _mensagem(BuildContext context, String texto) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(texto)));
-  }
+
 
 
 

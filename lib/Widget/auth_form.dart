@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
 import '../models/usuarios/tipo_usuario.dart';
-import '../models/usuarios/usuario.dart';
 import '../util/validar.dart';
 import 'form_text_field.dart';
+import '../models/instituicao.dart';
 
 class AuthForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -19,6 +18,10 @@ class AuthForm extends StatelessWidget {
   final TextEditingController tipoUsuarioController;
 
   final AutovalidateMode autovalidateMode;
+  final bool carregandoInstituicoes;
+  final List<Instituicao> listaInstituicoes;
+  final Instituicao? instituicaoSelecionada;
+  final void Function(Instituicao?)? onInstituicaoChanged;
 
   const AuthForm({
     required this.formKey,
@@ -32,6 +35,10 @@ class AuthForm extends StatelessWidget {
     required this.sobrenomeController,
     required this.tipoUsuarioController,
     required this.autovalidateMode,
+    required this.carregandoInstituicoes,
+    required this.listaInstituicoes,
+    this.instituicaoSelecionada,
+    this.onInstituicaoChanged,
   });
 
   @override
@@ -47,7 +54,7 @@ class AuthForm extends StatelessWidget {
 
           if (!isLogin) ...[
             SizedBox(height: 16),
-            FormTextField(label: "Confirmar senha", controller: confirmarSenhaController, isPassword: true, validator: (value) => Validar.formulario(TipoCampo.confirmarSenha, senhaController.text)),
+            FormTextField(label: "Confirmar senha", controller: confirmarSenhaController, isPassword: true, validator: (value) => Validar.formulario(TipoCampo.confirmarSenha, value, valorExtra: senhaController.text)),
             SizedBox(height: 16),
             FormTextField(label: "Nome", controller: nomeController, validator: (value) => Validar.formulario(TipoCampo.nome, value)),
             SizedBox(height: 16),
@@ -74,6 +81,43 @@ class AuthForm extends StatelessWidget {
                   onChanged: onTipoUsuarioChanged,
                 ),
                 SizedBox(height: 16),
+                if (carregandoInstituicoes)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: DropdownButtonFormField<Instituicao>(
+                      value: instituicaoSelecionada,
+                      isExpanded: true,
+                      hint: const Text('Selecione sua instituição'),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
+                      validator: (value) {
+                        // O dropdown só é obrigatório se o usuário for um aluno
+                        if (tipoUsuarioRadio == TipoUsuario.aluno && value == null) {
+                          return 'Por favor, selecione uma instituição.';
+                        }
+                        return null;
+                      },
+                      items: listaInstituicoes.map((Instituicao instituicao) {
+                        return DropdownMenuItem<Instituicao>(
+                          value: instituicao,
+                          child: Text(
+                            instituicao.nome,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: onInstituicaoChanged,
+                    ),
+                  ),
                 FormTextField(
                   label: tipoUsuarioRadio == TipoUsuario.aluno ? 'RGA' : 'SIAPE',
                   controller: tipoUsuarioController,

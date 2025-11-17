@@ -3,47 +3,48 @@ import 'package:tcc/models/firestore_model.dart';
 import 'package:tcc/util/validar.dart';
 
 class Atividade extends FirestoreModel{
-  String nome;
-  String descricao;
-  Timestamp? prazoEntregada;
-  Timestamp prazoDeEntrega;
-  int? credito;
-  int creditoMinimo;
-  int creditoMaximo;
+  final String disciplinaId;
+  final String nome;
+  final String descricao;
+  final DateTime dataDeEntrega;
+  final DateTime? dataDeEnvio;
+  final int? credito;
+  final int creditoMinimo;
+  final int creditoMaximo;
 
   Atividade({
     String? id,
+    required this.disciplinaId,
     required String nome,
     required String descricao,
-    required this.prazoDeEntrega,
-    this.prazoEntregada,
-    int? credito,
-    int? creditoMinimo,
-    int? creditoMaximo,
-  }): nome = Validar.nome(nome),
-        descricao = Validar.descricao(descricao),
-        creditoMinimo = creditoMinimo ?? 0,
-        creditoMaximo = creditoMaximo ?? 0, super (id: id);
+    this.dataDeEnvio,
+    required this.dataDeEntrega,
+    this.credito = 0,
+    this.creditoMinimo = 0,
+    this.creditoMaximo = 0,
+  }): nome = Validar.nomeAtividade(nome),
+        descricao = Validar.descricao(descricao), super (id: id);
 
   Map <String, dynamic> toMap(){
     return {
-      'id': id,
+      'disciplinaId': disciplinaId,
       'nome': nome,
       'descricao': descricao,
-      'prazoDeEntrega': prazoDeEntrega,
-      'prazoEntregada': prazoEntregada,
+      'dataDeEntrega': Timestamp.fromDate(dataDeEntrega),
+      'dataDeEnvio': dataDeEnvio != null ? Timestamp.fromDate(dataDeEnvio!): null,
       'credito': credito,
       'creditoMinimo': creditoMinimo,
       'creditoMaximo': creditoMaximo,
     };
   }
-  factory Atividade.fromMap(Map<String, dynamic> map) {
+  factory Atividade.fromMap(String id, Map<String, dynamic> map) {
     return Atividade(
-      id: map['id'] ?? '',
+      id: id,
+      disciplinaId: map['disciplinaId'] ?? '',
       nome: map['nome'] ?? '',
       descricao: map['descricao'] ?? '',
-      prazoDeEntrega: map['prazoDeEntrega'] ?? Timestamp.now(),
-      prazoEntregada: map['prazoEntregada'],
+      dataDeEntrega: (map['dataDeEntrega'] as Timestamp? ?? Timestamp.now()).toDate(),
+      dataDeEnvio: (map['dataDeEnvio'] as Timestamp?)?.toDate(),
       credito: map['credito'],
       creditoMinimo: map['creditoMinimo'] ?? 0,
       creditoMaximo: map['creditoMaximo'] ?? 0,
@@ -51,6 +52,6 @@ class Atividade extends FirestoreModel{
   }
   @override
   String toString(){
-    return'Atividade{id: $id, nome: $nome, descricao: $descricao, prazoDeEntrega: $prazoDeEntrega, prazoEntregada: $prazoEntregada, credito: $credito, creditoMinimo: $creditoMinimo, creditoMaximo: $creditoMaximo}';
+    return'Atividade{id: $id, disciplinaId: $disciplinaId, nome: $nome, descricao: $descricao, dataDeEntrega: $dataDeEntrega, dataDeEnvio: $dataDeEnvio, credito: $credito, creditoMinimo: $creditoMinimo, creditoMaximo: $creditoMaximo}';
   }
 }

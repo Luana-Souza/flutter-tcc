@@ -21,5 +21,11 @@ class DisciplinaRepository{
   Future<List<Disciplina>> findAll() async{
     return await _repository.findAll();
   }
-
+  Future<List<Disciplina>> findBy(
+      String campo,
+      dynamic valor,
+          {QueryType queryType = QueryType.isEqualTo}
+      ) async {
+    return await _repository.findBy(campo, valor, queryType: queryType);
+  }
 }

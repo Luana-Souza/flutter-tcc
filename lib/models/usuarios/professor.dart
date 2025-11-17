@@ -13,7 +13,8 @@ class Professor extends Usuario{
     required super.email,
     required super.criado_em,
     required String siape,
-    required id
+    required id,
+    required super.instituicoesIds,
 }): _siape = Validar.siape(siape), super(id: id);
 
   get siape => _siape;
@@ -32,6 +33,7 @@ class Professor extends Usuario{
       'siape': _siape,
       'tipo': getTipo().name,
       'criado_em': criado_em,
+      'instituicoesIds': instituicoesIds,
     };
   }
   factory Professor.fromMap(String id, Map<String, dynamic> map){
@@ -42,6 +44,7 @@ class Professor extends Usuario{
       email: map['usuarioEmail'] ?? '',
       siape: map['siape'] ?? '',
       criado_em: map['criado_em'] ?? Timestamp.now(),
+      instituicoesIds: List<String>.from(map['instituicoesIds'] ?? []),
     );
   }
   @override
