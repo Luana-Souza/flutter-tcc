@@ -68,7 +68,7 @@ class _DisciplinaListTileState extends State<DisciplinaListTile> {
             decoration: BoxDecoration(color: Colors.white, boxShadow: [
               BoxShadow(
                 blurRadius: 3,
-                color: Colors.black.withAlpha(100),
+                color: Colors.black.withAlpha(125),
                 spreadRadius: 1,
                 offset: Offset(2,2),
 
@@ -77,12 +77,57 @@ class _DisciplinaListTileState extends State<DisciplinaListTile> {
               borderRadius: BorderRadius.circular(16)
             ),
             height: 100,
-            child: ListTile(
-            title: Text(widget.disciplina.nome),
-            subtitle: Text("$siglaInstituicao - ${widget.disciplina.turma}"),
-            trailing: Icon(Icons.arrow_forward_ios),
-            onTap: widget.onTap,
+            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Stack(
+              children:[
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFF065b80),
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
                     ),
+                    height: 50,
+                    width: 150,
+                    child: ListTile(
+                      title: Text("$siglaInstituicao - ${widget.disciplina.turma}",
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          )),
+                    ),
+                  ),
+                ),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Column(
+                    children: [Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(width: 200,
+                      child: Text(widget.disciplina.nome,
+                        overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Color(0xFF065b80),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                        ),),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(onPressed:  widget.onTap, icon: Icon(Icons.arrow_forward))
+                          ],
+
+                        )
+                      ]
+                    )],
+                  )
+                )
+              ]
+            )
           );
       },
     );

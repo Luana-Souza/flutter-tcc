@@ -31,6 +31,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF065b80),
         appBar: AppBar(
           title: Text('Minhas Disciplinas'),
         ),
@@ -52,7 +53,17 @@ class _HomeState extends State<Home> {
                   ),
                   accountEmail: Text(user.email ?? 'email@dominio.com'),
                   currentAccountPicture: CircleAvatar(
-                    backgroundImage: AssetImage('assets/9440461.jpg'),
+                    backgroundImage: (user.photoURL != null && user.photoURL!.isNotEmpty)
+                        ? NetworkImage(user.photoURL!)
+                        : null,
+                    child: (user.photoURL == null || user.photoURL!.isEmpty)
+                        ? const Icon(
+                      Icons.person,
+                      size: 40,
+                      color: Colors.white,
+                    )
+                        : null,
+                    //AssetImage('assets/9440461.jpg'),
                   ),
                 );
               }),
@@ -93,39 +104,43 @@ class _HomeState extends State<Home> {
         ),
       body: Observer(
         builder: (_) {
-          return StreamBuilder<List<Disciplina>>(
-            stream: _back.listaDisciplinas,
-            builder: (context, snapshot) {
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+
+            child: StreamBuilder<List<Disciplina>>(
+              stream: _back.listaDisciplinas,
+              builder: (context, snapshot) {
 
 
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
 
-              if (snapshot.hasError) {
-                return Center(child: Text('Erro ao carregar as disciplinas.'));
-              }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Erro ao carregar as disciplinas.'));
+                }
 
-              final List<Disciplina> disciplinas = snapshot.data ?? [];
-              if (disciplinas.isEmpty) {
-                return Center(child: Text('Nenhuma disciplina encontrada.'));
-                // caso o usuario seja aluno ou professor exibir um texto diferente para adicionar a disciplina
+                final List<Disciplina> disciplinas = snapshot.data ?? [];
+                if (disciplinas.isEmpty) {
+                  return Center(child: Text('Nenhuma disciplina encontrada.'));
+                  // caso o usuario seja aluno ou professor exibir um texto diferente para adicionar a disciplina
 
-              }
+                }
 
-              return ListView.builder(
-                itemCount: disciplinas.length,
-                itemBuilder: (context, index) {
-                  final disciplina = disciplinas[index];
-                  return DisciplinaListTile(
-                    disciplina: disciplina,
-                    onTap: () {
-                      _back.irParaDisciplina(context, disciplina);
-                    },
-                  );
-                },
-              );
-            },
+                return ListView.builder(
+                  itemCount: disciplinas.length,
+                  itemBuilder: (context, index) {
+                    final disciplina = disciplinas[index];
+                    return DisciplinaListTile(
+                      disciplina: disciplina,
+                      onTap: () {
+                        _back.irParaDisciplina(context, disciplina);
+                      },
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
       ),
