@@ -39,6 +39,22 @@ class Validar {
     }
     return campo;
   }
+  static String _validarCredito(String nomeCampo, String? valor) {
+    if (valor == null || valor.trim().isEmpty) {
+      throw Exception('$nomeCampo não pode ser vazio');
+    }
+
+    final valorLimpo = valor.trim();
+    final valorNumerico = double.tryParse(valorLimpo);
+    if (valorNumerico == null) {
+      throw Exception('$nomeCampo deve ser um número válido');
+    }
+
+    if (valorNumerico < 0) {
+      throw Exception('$nomeCampo não pode ser negativo');
+    }
+    return valorLimpo;
+  }
 
   static String _campoStringNumerico(String nomeCampo, String campo,
       [int? min, int? max]) {
@@ -120,8 +136,14 @@ class Validar {
     return data;
   }
 
-  static int credito(int credito) {
-    return _campoNumerico("Crédito", credito, 2);
+  static String credito(String credito) {
+    return _validarCredito("Crédito", credito);
+  }
+  static String creditoMinimo( String creditominimo){
+    return _validarCredito("Crédito minimo", creditominimo);
+  }
+  static String creditoMaximo(String creditomaximo){
+    return _validarCredito("Crédito máximo", creditomaximo);
   }
 
   static String senha(String senha) {

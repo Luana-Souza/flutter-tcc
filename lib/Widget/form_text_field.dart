@@ -5,12 +5,16 @@ class FormTextField extends StatefulWidget {
   final TextEditingController controller;
   final bool isPassword;
   final String? Function(String?)? validator;
+  final int? maxLines;
+  final TextInputType? keyboardType;
 
   const FormTextField({
     required this.label,
     required this.controller,
     this.isPassword = false,
     this.validator,
+    this.maxLines = 1,
+    this.keyboardType,
   });
 
   @override
@@ -28,7 +32,9 @@ class _FormTextField extends State<FormTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLines: widget.maxLines,
       controller: widget.controller,
+      keyboardType: widget.keyboardType,
       decoration: InputDecoration(
         hintText: widget.label,
         fillColor: Colors.white,
@@ -42,7 +48,7 @@ class _FormTextField extends State<FormTextField> {
         focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(64), borderSide: BorderSide(color: Colors.black45, width: 4) ),
         errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(64), borderSide: BorderSide(color: Colors.red, width: 2) ),
         focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(64), borderSide: BorderSide(color: Colors.redAccent, width: 2) ),
-       // contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        // contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         suffixIcon: widget.isPassword
             ? IconButton(
           icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),

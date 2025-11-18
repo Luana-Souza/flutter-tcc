@@ -12,16 +12,16 @@ import '../util/validar.dart';
 
 mostrarModalInicio(BuildContext context){
   showModalBottomSheet(context: context,
-    backgroundColor: Colors.blueGrey,
+    backgroundColor: Color(0xFF065b80),
     isDismissible: false,
     isScrollControlled: true,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(32))
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32))
     ),
     builder: (context){
-  return DisciplinaModal();
-  },
-);
+      return DisciplinaModal();
+    },
+  );
 }
 class DisciplinaModal extends StatefulWidget {
   final Disciplina? disciplina;
@@ -72,111 +72,111 @@ class _DisciplinaModalState extends State<DisciplinaModal> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(32),
-      height: MediaQuery.of(context).size.height *0.9,
-      child: Form(key: _formKey,
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Column(
-            mainAxisSize:  MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Criar nova disciplina",
-                  style: TextStyle(fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+        padding: EdgeInsets.all(32),
+        height: MediaQuery.of(context).size.height *0.9,
+        child: Form(key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Column(
+                  mainAxisSize:  MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Criar nova disciplina",
+                          style: TextStyle(fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        IconButton(onPressed: () {
+                          Navigator.pop(context);
+                        }, icon: Icon(Icons.close))
+                      ],
+
                     ),
-                  IconButton(onPressed: () {
-                    Navigator.pop(context);
-                  }, icon: Icon(Icons.close))
-                ],
+                    Divider(),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 16),
+                        TextFormField(controller: _nomeCtrl, decoration: getInputDecoration(
+                          "Nome da disciplina",
+                          hintText: "Ex: Sociologia",
+                          icon: Icon(
+                              Icons.school_outlined,
+                              color: Colors.white),
+                        ),
+                        ),
+                        SizedBox(height: 16),
 
-              ),
-              Divider(),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(height: 16),
-                  TextFormField(controller: _nomeCtrl, decoration: getInputDecoration(
-                    "Nome da disciplina",
-                    hintText: "Ex: Sociologia",
-                    icon: Icon(
-                        Icons.school_outlined,
-                        color: Colors.white),
-                  ),
-                  ),
-                  SizedBox(height: 16),
+                        if (isCarregandoInstituicoes)
+                          Center(child: CircularProgressIndicator())
+                        else
+                          DropdownButtonFormField<Instituicao>(
+                            isExpanded: true,
 
-                  if (isCarregandoInstituicoes)
-                    Center(child: CircularProgressIndicator())
-                  else
-                    DropdownButtonFormField<Instituicao>(
-                      isExpanded: true,
-
-                      value: _instituicaoSelecionada,
-                      onChanged: (Instituicao? novoValor) {
-                        setState(() {
-                          _instituicaoSelecionada = novoValor;
-                        });
-                      },
-                      items: _listaInstituicoes
-                          .map<DropdownMenuItem<Instituicao>>((Instituicao instituicao) {
-                        return DropdownMenuItem<Instituicao>(
-                          value: instituicao,
-                          child: Text(
-                            instituicao.nome,
-                            overflow: TextOverflow.ellipsis,
+                            value: _instituicaoSelecionada,
+                            onChanged: (Instituicao? novoValor) {
+                              setState(() {
+                                _instituicaoSelecionada = novoValor;
+                              });
+                            },
+                            items: _listaInstituicoes
+                                .map<DropdownMenuItem<Instituicao>>((Instituicao instituicao) {
+                              return DropdownMenuItem<Instituicao>(
+                                value: instituicao,
+                                child: Text(
+                                  instituicao.nome,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            }).toList(),
+                            decoration: getInputDecoration(
+                              "Instituição",
+                              icon: Icon(Icons.account_balance_outlined, color: Colors.white),
+                            ),
+                            dropdownColor: Colors.blueGrey[700],
+                            style: TextStyle(color: Colors.black),
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Por favor, selecione uma instituição.';
+                              }
+                              return null;
+                            },
                           ),
-                        );
-                      }).toList(),
-                      decoration: getInputDecoration(
-                        "Instituição",
-                        icon: Icon(Icons.account_balance_outlined, color: Colors.white),
-                      ),
-                      dropdownColor: Colors.blueGrey[700],
-                      style: TextStyle(color: Colors.black),
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Por favor, selecione uma instituição.';
-                        }
-                        return null;
-                      },
+
+                        SizedBox(height: 16),
+                        TextFormField(controller: _turmaCtrl, decoration: getInputDecoration(
+                          "Turma",
+                          hintText: "Ex: T01",
+                          icon: Icon(
+                              Icons.abc,
+                              color: Colors.white),
+                        ),
+                        ),
+                      ],
                     ),
-
-                  SizedBox(height: 16),
-                  TextFormField(controller: _turmaCtrl, decoration: getInputDecoration(
-                    "Turma",
-                    hintText: "Ex: T01",
-                    icon: Icon(
-                        Icons.abc,
-                        color: Colors.white),
-                  ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-
-          ElevatedButton(onPressed: () {
-            enviarClicado();
-
-          }, child: (isCarregandoEnvio)?
-              SizedBox(
-                height: 16,
-                width: 16,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
+                  ],
                 ),
-              ):Text("Criar disciplina"),
-          )
-        ],
 
-      ))
+                ElevatedButton(onPressed: () {
+                  enviarClicado();
+
+                }, child: (isCarregandoEnvio)?
+                SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                ):Text("Criar disciplina"),
+                )
+              ],
+
+            ))
     );
 
   }
@@ -192,14 +192,11 @@ class _DisciplinaModalState extends State<DisciplinaModal> {
     String nome = _nomeCtrl.text;
     String turma = _turmaCtrl.text;
 
-    // 6. ATUALIZAÇÃO DA CRIAÇÃO DA DISCIPLINA
-    // O ID do professor agora é pego dentro do `disciplinaService.criarDisciplina`
-    // então não precisamos mais do _authService aqui.
     Disciplina disciplina = Disciplina(
       nome: nome,
       turma: turma,
-      instituicaoId: _instituicaoSelecionada!.id!, // Usa o ID da instituição selecionada
-      professorId: '', // O service irá preencher com o ID do usuário logado
+      instituicaoId: _instituicaoSelecionada!.id!,
+      professorId: '',
     );
 
     await _disciplinaService.criarDisciplina(disciplina);

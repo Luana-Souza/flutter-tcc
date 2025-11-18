@@ -94,13 +94,22 @@ class AuthForm extends StatelessWidget {
                       isExpanded: true,
                       hint: const Text('Selecione sua instituição'),
                       decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Color(0xFF065b80),
+                        hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                        labelStyle: TextStyle(color: Colors.white),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        prefixIcon: Icon(Icons.account_balance, color: Colors.white),
                       ),
+
+                      dropdownColor: Color(0xFF065b80),
+                      style: const TextStyle(color: Colors.white),
+
+                      icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
                       validator: (value) {
-                        // O dropdown só é obrigatório se o usuário for um aluno
                         if (tipoUsuarioRadio == TipoUsuario.aluno && value == null) {
                           return 'Por favor, selecione uma instituição.';
                         }

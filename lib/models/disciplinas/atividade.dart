@@ -6,8 +6,8 @@ class Atividade extends FirestoreModel{
   final String disciplinaId;
   final String nome;
   final String descricao;
-  final DateTime dataDeEntrega;
-  final DateTime? dataDeEnvio;
+  final DateTime? dataDeEntrega;
+  final DateTime dataDeEnvio;
   final int? credito;
   final int creditoMinimo;
   final int creditoMaximo;
@@ -17,8 +17,8 @@ class Atividade extends FirestoreModel{
     required this.disciplinaId,
     required String nome,
     required String descricao,
-    this.dataDeEnvio,
-    required this.dataDeEntrega,
+    required this.dataDeEnvio,
+    this.dataDeEntrega,
     this.credito = 0,
     this.creditoMinimo = 0,
     this.creditoMaximo = 0,
@@ -30,8 +30,8 @@ class Atividade extends FirestoreModel{
       'disciplinaId': disciplinaId,
       'nome': nome,
       'descricao': descricao,
-      'dataDeEntrega': Timestamp.fromDate(dataDeEntrega),
-      'dataDeEnvio': dataDeEnvio != null ? Timestamp.fromDate(dataDeEnvio!): null,
+      'dataDeEntrega': dataDeEntrega != null ? Timestamp.fromDate(dataDeEntrega!) : null,
+      'dataDeEnvio': Timestamp.fromDate(dataDeEnvio!),
       'credito': credito,
       'creditoMinimo': creditoMinimo,
       'creditoMaximo': creditoMaximo,
@@ -44,7 +44,7 @@ class Atividade extends FirestoreModel{
       nome: map['nome'] ?? '',
       descricao: map['descricao'] ?? '',
       dataDeEntrega: (map['dataDeEntrega'] as Timestamp? ?? Timestamp.now()).toDate(),
-      dataDeEnvio: (map['dataDeEnvio'] as Timestamp?)?.toDate(),
+      dataDeEnvio: (map['dataDeEnvio'] as Timestamp?)!.toDate(),
       credito: map['credito'],
       creditoMinimo: map['creditoMinimo'] ?? 0,
       creditoMaximo: map['creditoMaximo'] ?? 0,

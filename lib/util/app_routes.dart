@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tcc/models/disciplinas/disciplina.dart';
 import 'package:tcc/util/roteador_tela.dart';
-import 'package:tcc/view/home.dart';
 import 'package:tcc/view/tela_disciplina.dart';
 import 'package:tcc/view/tela_login.dart';
+
+import '../view/home.dart';
 
 class AppRoutes {
   static const ROTEADOR = '/';
