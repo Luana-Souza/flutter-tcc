@@ -20,8 +20,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final _back = HomeBack();
   final _authService = GetIt.I<AuthService>();
-  // final DisciplinaService _disciplina = DisciplinaService();
-  // final UsuarioService _usuario = UsuarioService();
   @override
   void initState() {
     super.initState();
@@ -31,21 +29,33 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF065b80),
+      backgroundColor:  Colors.white,
         appBar: AppBar(
-          title: Text('Minhas Disciplinas'),
+          title: Text('Minhas Disciplinas', overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.white)),
+          backgroundColor: Color(0xFF065b80),
+          iconTheme: IconThemeData(color: Colors.white),
+          centerTitle: true,
+          toolbarHeight: 65,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(32),
+            ),
+          ),
         ),
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              // 6. Usar Observer para que o Drawer se atualize se o usuário mudar
               Observer(builder: (_) {
                 final user = _authService.currentUser;
-                if (user == null) return const SizedBox.shrink(); // Não mostra nada se não houver usuário
+                if (user == null) return const SizedBox.shrink();
 
                 return UserAccountsDrawerHeader(
-                  decoration: BoxDecoration(color: Colors.teal),
+                  decoration: BoxDecoration(color: Color(0xFF065b80)),
                   accountName: Text(
                     (user.displayName?.isNotEmpty ?? false)
                         ? user.displayName!
@@ -82,8 +92,7 @@ class _HomeState extends State<Home> {
                 leading: Icon(Icons.logout),
                 title: Text("Sair"),
                 onTap: () async {
-                  // 7. Chamar o método de logout centralizado
-                  await _authService.signOut(); // Usando o método correto do AuthService
+                  await _back.usuarioSair(context);
                   if (mounted) {
                     Navigator.pushAndRemoveUntil(
                       context,
@@ -123,7 +132,6 @@ class _HomeState extends State<Home> {
                 final List<Disciplina> disciplinas = snapshot.data ?? [];
                 if (disciplinas.isEmpty) {
                   return Center(child: Text('Nenhuma disciplina encontrada.'));
-                  // caso o usuario seja aluno ou professor exibir um texto diferente para adicionar a disciplina
 
                 }
 

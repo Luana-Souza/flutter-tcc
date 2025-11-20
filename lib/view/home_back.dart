@@ -14,7 +14,6 @@ class HomeBack = _HomeBack with _$HomeBack;
 
 abstract class _HomeBack with Store{
   final _usuarioService = GetIt.I<UsuarioService>();
-  //final DisciplinaService _disciplinaService = DisciplinaService();
   final _authService = GetIt.I<AuthService>();
 
   @observable
@@ -35,6 +34,9 @@ abstract class _HomeBack with Store{
       AppRoutes.TELA_DISCIPLINA,
       arguments: disciplina,
     );
+  }
+  usuarioSair(BuildContext context){
+    _usuarioService.sair();
   }
 
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tcc/Widget/input_decoration.dart';
 import '../models/usuarios/tipo_usuario.dart';
 import '../util/validar.dart';
 import 'form_text_field.dart';
@@ -44,104 +45,101 @@ class AuthForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
-      autovalidateMode: autovalidateMode,
-      child: Column(
-        children: [
-          FormTextField(label: "Email", controller: emailController, validator: (value) => Validar.formulario(TipoCampo.email, value)),
-          SizedBox(height: 16),
-          FormTextField(label: "Senha", controller: senhaController, isPassword: true, validator: (value) => Validar.formulario(TipoCampo.senha, value)),
+        key: formKey,
+        autovalidateMode: autovalidateMode,
+        child: Column(
+            children: [
+            FormTextField(label: "Email", controller: emailController,
+            validator: (value) => Validar.formulario(TipoCampo.email, value)),
+        SizedBox(height: 16),
+        FormTextField(label: "Senha",
+            controller: senhaController,
+            isPassword: true,
+            validator: (value) => Validar.formulario(TipoCampo.senha, value)),
 
-          if (!isLogin) ...[
-            SizedBox(height: 16),
-            FormTextField(label: "Confirmar senha", controller: confirmarSenhaController, isPassword: true, validator: (value) => Validar.formulario(TipoCampo.confirmarSenha, value, valorExtra: senhaController.text)),
-            SizedBox(height: 16),
-            FormTextField(label: "Nome", controller: nomeController, validator: (value) => Validar.formulario(TipoCampo.nome, value)),
-            SizedBox(height: 16),
-            FormTextField(label: "Sobrenome", controller: sobrenomeController, validator: (value) => Validar.formulario(TipoCampo.sobrenome, value)),
-            SizedBox(height: 16),
+        if (!isLogin) ...[
+    SizedBox(height: 16),
+    FormTextField(label: "Confirmar senha", controller: confirmarSenhaController, isPassword: true, validator: (value) => Validar.formulario(TipoCampo.confirmarSenha, value, valorExtra: senhaController.text)),
+    SizedBox(height: 16),
+    FormTextField(label: "Nome", controller: nomeController, validator: (value) => Validar.formulario(TipoCampo.nome, value)),
+    SizedBox(height: 16),
+    FormTextField(label: "Sobrenome", controller: sobrenomeController, validator: (value) => Validar.formulario(TipoCampo.sobrenome, value)),
+    SizedBox(height: 16),
 
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const Text(
-                  'Tipo de usuário:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                RadioListTile<TipoUsuario>(
-                  title: const Text('Aluno'),
-                  value: TipoUsuario.aluno,
-                  groupValue: tipoUsuarioRadio,
-                  onChanged: onTipoUsuarioChanged,
-                ),
-                RadioListTile<TipoUsuario>(
-                  title: const Text('Professor'),
-                  value: TipoUsuario.professor,
-                  groupValue: tipoUsuarioRadio,
-                  onChanged: onTipoUsuarioChanged,
-                ),
-                SizedBox(height: 16),
-                if (carregandoInstituicoes)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    child: Center(child: CircularProgressIndicator()),
-                  )
-                else
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: DropdownButtonFormField<Instituicao>(
-                      value: instituicaoSelecionada,
-                      isExpanded: true,
-                      hint: const Text('Selecione sua instituição'),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xFF065b80),
-                        hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                        prefixIcon: Icon(Icons.account_balance, color: Colors.white),
-                      ),
-
-                      dropdownColor: Color(0xFF065b80),
-                      style: const TextStyle(color: Colors.white),
-
-                      icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-                      validator: (value) {
-                        if (tipoUsuarioRadio == TipoUsuario.aluno && value == null) {
-                          return 'Por favor, selecione uma instituição.';
-                        }
-                        return null;
-                      },
-                      items: listaInstituicoes.map((Instituicao instituicao) {
-                        return DropdownMenuItem<Instituicao>(
-                          value: instituicao,
-                          child: Text(
-                            instituicao.nome,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: onInstituicaoChanged,
-                    ),
-                  ),
-                FormTextField(
-                  label: tipoUsuarioRadio == TipoUsuario.aluno ? 'RGA' : 'SIAPE',
-                  controller: tipoUsuarioController,
-                  validator: (value) {
-                    if (isLogin) return null;
-                    return tipoUsuarioRadio == TipoUsuario.aluno
-                        ? Validar.formulario(TipoCampo.rga, value)
-                        : Validar.formulario(TipoCampo.siape, value);
-                  },
-                ),
-              ],
-            ),
-          ],
-        ],
+    Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+    const Text(
+    'Tipo de usuário:',
+    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    ),
+    RadioListTile<TipoUsuario>(
+    title: const Text('Aluno'),
+    value: TipoUsuario.aluno,
+    groupValue: tipoUsuarioRadio,
+    onChanged: onTipoUsuarioChanged,
+    ),
+    RadioListTile<TipoUsuario>(
+    title: const Text('Professor'),
+    value: TipoUsuario.professor,
+    groupValue: tipoUsuarioRadio,
+    onChanged: onTipoUsuarioChanged,
+    ),
+    SizedBox(height: 16),
+    if (carregandoInstituicoes)
+    const Padding(
+    padding: EdgeInsets.symmetric(vertical: 16.0),
+    child: Center(child: CircularProgressIndicator()),
+    )
+    else
+    Padding(
+    padding: EdgeInsets.only(bottom: 16.0),
+    child: DropdownButtonFormField<Instituicao>(
+    value: instituicaoSelecionada,
+    isExpanded: true,
+    hint:  Text('Selecione sua instituição', style: TextStyle(color: Colors.black),),
+    dropdownColor:  Colors.blueGrey[700],
+    style: TextStyle(color: Colors.black),
+    icon: Icon(Icons.arrow_drop_down, color: Colors.black),
+    validator: (value) {
+    if (tipoUsuarioRadio == TipoUsuario.aluno && value == null) {
+    return 'Por favor, selecione uma instituição.';
+    }
+    return null;
+    },
+    items: listaInstituicoes
+        .map<DropdownMenuItem<Instituicao>>((Instituicao instituicao) {
+    return DropdownMenuItem<Instituicao>(
+    value: instituicao,
+    child: Text(
+    instituicao.nome,
+    overflow: TextOverflow.ellipsis,
+    ),
+    );
+    }).toList(),
+      decoration: getInputDecoration(
+        'Instituição'
       ),
+
+    onChanged: onInstituicaoChanged,
+    ),
+    ),
+    FormTextField(
+    label: tipoUsuarioRadio == TipoUsuario.aluno ? 'RGA' : 'SIAPE',
+    controller: tipoUsuarioController,
+    validator: (value) {
+    if (isLogin) return null;
+    return tipoUsuarioRadio == TipoUsuario.aluno
+    ? Validar.formulario(TipoCampo.rga, value)
+        : Validar.formulario(TipoCampo.siape, value);
+    },
+    ),
+    ],
+    ),
+    ],
+    ],
+    )
+    ,
     );
   }
 }

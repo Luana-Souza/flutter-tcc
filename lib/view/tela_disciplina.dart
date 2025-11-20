@@ -175,7 +175,7 @@ class _TelaDisciplinaState extends State<TelaDisciplina> {
         backgroundColor: Color(0xFF065b80),
         centerTitle: true,
         toolbarHeight: 65,
-        iconTheme: IconThemeData(color: Colors.white), // Adiciona o ícone de voltar branco
+        iconTheme: IconThemeData(color: Colors.white),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(32),

@@ -11,8 +11,32 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: true,
       theme: ThemeData(
         brightness: Brightness.light,
-        primaryColor: Colors.cyan,
+        primaryColor: Color(0xFF065b80),
         hintColor: Colors.cyan,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor:  Color(0xFF065b80),
+          primary:  Color(0xFF065b80),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: Color(0xFF065b80),
+          ),
+        ),
+
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF065b80),
+            foregroundColor: Colors.white,
+          ),
+        ),
+
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFF065b80),
+          foregroundColor: Colors.white,
+        ),
+
+        useMaterial3: true,
+
       ),
 
       localizationsDelegates: [

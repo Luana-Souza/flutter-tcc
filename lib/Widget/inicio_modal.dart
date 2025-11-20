@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:tcc/Widget/form_text_field.dart';
 import 'package:tcc/Widget/input_decoration.dart';
 import 'package:tcc/Widget/meu_snackbar.dart';
 import 'package:tcc/models/disciplinas/disciplina.dart';
 import 'package:tcc/service/disciplina_service.dart';
 import 'package:tcc/models/instituicao.dart';
 import 'package:tcc/service/instituicao_service.dart';
-import '../service/auth_service.dart';
-import '../util/validar.dart';
 
 mostrarModalInicio(BuildContext context){
   showModalBottomSheet(context: context,
@@ -92,7 +89,7 @@ class _DisciplinaModalState extends State<DisciplinaModal> {
                         ),
                         IconButton(onPressed: () {
                           Navigator.pop(context);
-                        }, icon: Icon(Icons.close))
+                        }, icon: Icon(Icons.close, color: Colors.white))
                       ],
 
                     ),
