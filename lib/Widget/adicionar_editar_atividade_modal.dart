@@ -39,7 +39,9 @@ class _AdicionarAtividadeFormState extends State<AdicionarAtividadeForm> {
   final _creditoMaxController = TextEditingController();
   DateTime? _dataSelecionada;
   final _disciplinaService = GetIt.I<DisciplinaService>();
+
   late bool _isEditing;
+  String? _erroData;
 
   @override
   void initState() {
@@ -59,12 +61,14 @@ class _AdicionarAtividadeFormState extends State<AdicionarAtividadeForm> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     if (_dataSelecionada == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Por favor, selecione uma data de entrega.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Por favor, selecione uma data para a avaliação.'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
       return;
     }
 
@@ -129,6 +133,8 @@ class _AdicionarAtividadeFormState extends State<AdicionarAtividadeForm> {
     if (dataEscolhida != null) {
       setState(() {
         _dataSelecionada = dataEscolhida;
+        _erroData = null;
+
       });
     }
   }
@@ -147,7 +153,7 @@ class _AdicionarAtividadeFormState extends State<AdicionarAtividadeForm> {
               FormTextField(
                 label: "Nome da atividade",
                 controller: _nomeController,
-                validator:(value) => Validar.nomeAtividade(value!),
+                validator:(value) => Validar.formulario(TipoCampo.nomeAtividade, value),
               ),
               const SizedBox(height: 16),
 
@@ -162,12 +168,7 @@ class _AdicionarAtividadeFormState extends State<AdicionarAtividadeForm> {
                   ),
                 ),
                 maxLines: 3,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'A descrição não pode ser vazia.';
-                  }
-                  return null;
-                },
+                validator: (value) => Validar.formulario(TipoCampo.descricao, value),
               ),
               const SizedBox(height: 20),
               Row(
@@ -180,8 +181,7 @@ class _AdicionarAtividadeFormState extends State<AdicionarAtividadeForm> {
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         try {
-                          Validar.creditoMinimo(value!);
-
+                          Validar.formulario(TipoCampo.creditoMinimo, value);
                           return null;
                         } on Exception catch (e) {
                           return e.toString().replaceFirst('Exception: ', '');
@@ -195,10 +195,10 @@ class _AdicionarAtividadeFormState extends State<AdicionarAtividadeForm> {
                     child: FormTextField(
                       label: "Créd. Máximo",
                       controller: _creditoMaxController,
-                      keyboardType: TextInputType.number, // Teclado numérico
+                      keyboardType: TextInputType.number,
                       validator: (value) {
                         try {
-                          Validar.creditoMaximo(value!);
+                          Validar.formulario(TipoCampo.creditoMaximo, value);
                           final minText = _creditoMinController.text;
                           if (minText.isNotEmpty && value != null) {
                             final min = num.tryParse(minText);
@@ -228,14 +228,16 @@ class _AdicionarAtividadeFormState extends State<AdicionarAtividadeForm> {
               ),
               const SizedBox(height: 8),
 
-              GestureDetector(
+              InkWell(
                 onTap: _apresentarSeletorDeData,
+                borderRadius: BorderRadius.circular(8),
                 child: InputDecorator(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                    errorText: _erroData,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -244,6 +246,9 @@ class _AdicionarAtividadeFormState extends State<AdicionarAtividadeForm> {
                         _dataSelecionada == null
                             ? 'Selecione uma data'
                             : DateFormat('dd/MM/yyyy').format(_dataSelecionada!),
+                        style: TextStyle(
+                          color: _dataSelecionada == null ? Colors.black54 : Colors.black,
+                        ),
                       ),
                       Icon(Icons.calendar_today, color: Theme.of(context).primaryColor),
                     ],

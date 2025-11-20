@@ -12,26 +12,25 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Color(0xFF065b80),
-        hintColor: Colors.cyan,
         colorScheme: ColorScheme.fromSeed(
           seedColor:  Color(0xFF065b80),
           primary:  Color(0xFF065b80),
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            foregroundColor: Color(0xFF065b80),
+            foregroundColor: Color(0xFF325366),
           ),
         ),
 
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF065b80),
+            backgroundColor: const Color(0xFF325366),
             foregroundColor: Colors.white,
           ),
         ),
 
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Color(0xFF065b80),
+          backgroundColor: Color(0xFF325366),
           foregroundColor: Colors.white,
         ),
 

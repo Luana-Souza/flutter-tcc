@@ -46,6 +46,7 @@ class _AdicionarAvaliacaoFormState extends State<AdicionarAvaliacaoForm> {
   late DateTime? _dataSelecionada;
 
   bool _isEditing = false;
+  String? _erroData;
 
   @override
   void initState() {
@@ -61,34 +62,30 @@ class _AdicionarAvaliacaoFormState extends State<AdicionarAvaliacaoForm> {
     _dataSelecionada = _isEditing ? widget.avaliacao!.data : null;
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+  Future<void> _apresentarSeletorDeData() async {
+    final dataEscolhida = await showDatePicker(
       context: context,
-      initialDate: _dataSelecionada ?? DateTime.now(),
-      firstDate: DateTime(2020),
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2101),
     );
-    if (picked != null && picked != _dataSelecionada) {
+
+    if (dataEscolhida != null) {
       setState(() {
-        _dataSelecionada = picked;
+        _dataSelecionada = dataEscolhida;
+        _erroData = null;
+
       });
     }
   }
 
   Future<void> _salvarAvaliacao() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!(_formKey.currentState?.validate() ?? false)) return;
 
     if (_dataSelecionada == null) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Por favor, selecione uma data para a avaliação.'),
-            backgroundColor: Colors.orange,
-          ),
-        );
-      }
+      setState(() {
+        _erroData = 'Por favor, selecione uma data para a avaliação.';
+      });
       return;
     }
 
@@ -149,13 +146,13 @@ class _AdicionarAvaliacaoFormState extends State<AdicionarAvaliacaoForm> {
               FormTextField(
                 label: "Nome da Avaliação",
                 controller: _nomeController,
-                //  validator: (value) => Validar.nomeAvaliacao(value!),
+                  validator: (value) => Validar.formulario(TipoCampo.nomeAvaliacao, value),
               ),
               const SizedBox(height: 16),
               FormTextField(
                 label: "Sigla (Ex: P01, T02)",
                 controller: _siglaController,
-                //   validator: (value) => Validar.sigla(value!),
+                   validator: (value) => Validar.formulario(TipoCampo.sigla, value),
               ),
               const SizedBox(height: 16),
               FormTextField(
@@ -178,21 +175,28 @@ class _AdicionarAvaliacaoFormState extends State<AdicionarAvaliacaoForm> {
               const Text("Data da Avaliação", style: TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               InkWell(
-                onTap: () => _selectDate(context),
+                onTap: _apresentarSeletorDeData,
+                borderRadius: BorderRadius.circular(8),
                 child: InputDecorator(
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                    errorText: _erroData,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
+                    children: [
                       Text(
                         _dataSelecionada == null
                             ? 'Selecione uma data'
                             : DateFormat('dd/MM/yyyy').format(_dataSelecionada!),
+                        style: TextStyle(
+                          color: _dataSelecionada == null ? Colors.black54 : Colors.black,
+                        ),
                       ),
-                      const Icon(Icons.calendar_today),
+                      Icon(Icons.calendar_today, color: Theme.of(context).primaryColor),
                     ],
                   ),
                 ),

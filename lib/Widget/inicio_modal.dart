@@ -6,6 +6,7 @@ import 'package:tcc/models/disciplinas/disciplina.dart';
 import 'package:tcc/service/disciplina_service.dart';
 import 'package:tcc/models/instituicao.dart';
 import 'package:tcc/service/instituicao_service.dart';
+import 'package:tcc/util/validar.dart';
 
 mostrarModalInicio(BuildContext context){
   showModalBottomSheet(context: context,
@@ -98,7 +99,7 @@ class _DisciplinaModalState extends State<DisciplinaModal> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SizedBox(height: 16),
-                        TextFormField(controller: _nomeCtrl, decoration: getInputDecoration(
+                        TextFormField(controller: _nomeCtrl, validator: (value) => Validar.formulario(TipoCampo.nomeDisciplina, value) , decoration: getInputDecoration(
                           "Nome da disciplina",
                           hintText: "Ex: Sociologia",
                           icon: Icon(
@@ -145,7 +146,7 @@ class _DisciplinaModalState extends State<DisciplinaModal> {
                           ),
 
                         SizedBox(height: 16),
-                        TextFormField(controller: _turmaCtrl, decoration: getInputDecoration(
+                        TextFormField(controller: _turmaCtrl, validator: (value) => Validar.formulario(TipoCampo.turma, value) , decoration: getInputDecoration(
                           "Turma",
                           hintText: "Ex: T01",
                           icon: Icon(
@@ -160,7 +161,6 @@ class _DisciplinaModalState extends State<DisciplinaModal> {
 
                 ElevatedButton(onPressed: () {
                   enviarClicado();
-
                 }, child: (isCarregandoEnvio)?
                 SizedBox(
                   height: 16,

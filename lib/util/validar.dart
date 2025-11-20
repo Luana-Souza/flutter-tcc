@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-enum TipoCampo { email, senha, nome, sobrenome, rga, siape, confirmarSenha }
+enum TipoCampo { email, senha, nome, sobrenome, rga, siape, confirmarSenha, nomeDisciplina, nomeAtividade, nomeAvaliacao, turma, instituicao, sigla, descricao, credito, creditoMinimo, creditoMaximo}
 class Validar {
 
   static String _campoString(String nomeCampo, String campo,
@@ -98,18 +98,16 @@ class Validar {
   }
 
 
-  // Criar um método validar para nomeDisciplina o atual não aceita números
-
   static String nomeDisciplina(String nomeDisciplina) {
-    return _campoStringNumerico('Nome da Disciplina', nomeDisciplina, 2, 50);
+    return _campoStringNumerico('Nome da disciplina', nomeDisciplina, 2, 50);
   }
 
   static String nomeAtividade(String nomeAtividade) {
-    return _campoStringNumerico('Nome da Atividade', nomeAtividade, 2, 50);
+    return _campoStringNumerico('Nome da atividade', nomeAtividade, 2, 50);
   }
 
   static nomeAvaliacao(String nomeAvaliacao) {
-    return _campoStringNumerico('Nome da Avaliação', nomeAvaliacao, 2, 50);
+    return _campoStringNumerico('Nome da avaliação', nomeAvaliacao, 2, 50);
   }
 
   // Exemplo T01, T02
@@ -165,29 +163,19 @@ class Validar {
 
   static String? formulario(TipoCampo tipo, String? valor,
       {String? valorExtra}) {
-    if (valor == null || valor
-        .trim()
-        .isEmpty) {
+    if (valor == null || valor.trim().isEmpty) {
       if (tipo == TipoCampo.confirmarSenha) {
         return 'Confirme sua senha.';
       }
-      String nomeDoCampo = tipo.name;
-
-      nomeDoCampo = nomeDoCampo[0].toUpperCase() + nomeDoCampo.substring(1);
-      if (tipo == TipoCampo.rga || tipo == TipoCampo.siape) {
-        return 'O campo ${tipo.name.toUpperCase()} é obrigatório.';
-      }
-
-      return 'O campo $nomeDoCampo é obrigatório.';
     }
 
     try {
       switch (tipo) {
         case TipoCampo.email:
-          email(valor);
+          email(valor!);
           break;
         case TipoCampo.senha:
-          senha(valor);
+          senha(valor!);
           break;
         case TipoCampo.confirmarSenha:
           if (valor != valorExtra) {
@@ -195,16 +183,46 @@ class Validar {
           }
           break;
         case TipoCampo.nome:
-          nome(valor);
+          nome(valor!);
           break;
         case TipoCampo.sobrenome:
-          sobrenome(valor);
+          sobrenome(valor!);
           break;
         case TipoCampo.rga:
-          rga(valor);
+          rga(valor!);
           break;
         case TipoCampo.siape:
-          siape(valor);
+          siape(valor!);
+          break;
+        case TipoCampo.nomeDisciplina:
+          nomeDisciplina(valor!);
+          break;
+        case TipoCampo.nomeAtividade:
+          nomeAtividade(valor!);
+          break;
+        case TipoCampo.nomeAvaliacao:
+          nomeAvaliacao(valor!);
+          break;
+        case TipoCampo.turma:
+          turma(valor!);
+          break;
+        case TipoCampo.instituicao:
+          instituicao(valor!);
+          break;
+        case TipoCampo.sigla:
+          sigla(valor!);
+          break;
+        case TipoCampo.descricao:
+          descricao(valor!);
+          break;
+        case TipoCampo.credito:
+          credito(valor!);
+          break;
+        case TipoCampo.creditoMinimo:
+          creditoMinimo(valor!);
+          break;
+        case TipoCampo.creditoMaximo:
+          creditoMaximo(valor!);
           break;
       }
     } on Exception catch (e) {
