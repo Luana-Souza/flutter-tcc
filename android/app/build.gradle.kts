@@ -10,7 +10,8 @@ plugins {
 
 android {
     namespace = "com.ufms.tcc"
-    compileSdk = flutter.compileSdkVersion
+    //compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = "27.0.12077973"
 
     compileOptions {

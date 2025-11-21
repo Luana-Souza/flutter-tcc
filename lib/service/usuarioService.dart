@@ -81,21 +81,49 @@ class UsuarioService {
   }
 
   Future<Usuario?> getUsuarioLogado() async {
-    final authUser = _authService.currentUser;
-    if (authUser == null) {
-      return null;
+    final uid = _authService.currentUser?.uid;
+    if (uid == null) return null;
+
+    try {
+      final professor = await _professorService.findByUid(uid);
+      if (professor != null) {
+        return professor;
+      }
+    } catch (e) {
+      print("Não foi possível carregar como Professor (provavelmente é Aluno): $e");
+    }
+    try {
+      final aluno = await _alunoService.findByUid(uid);
+      if (aluno != null) {
+        return aluno;
+      }
+    } catch (e) {
+      print("Erro ao buscar como Aluno: $e");
     }
 
-    Professor? professor = await _professorService.findByUid(authUser.uid);
-    if (professor != null) {
-      return professor;
-    }
-    Aluno? aluno = await _alunoService.findByUid(authUser.uid);
-    if (aluno != null) {
-      return aluno;
-    }
     return null;
   }
+
+  Future<Usuario?> getUsuario(String uid) async {
+    try {
+      Professor? professor = await _professorService.findByUid(uid);
+      if (professor != null) {
+        return professor;
+      }
+    } catch (e) {
+    }
+
+    try {
+      Aluno? aluno = await _alunoService.findByUid(uid);
+      if (aluno != null) {
+        return aluno;
+      }
+    } catch (e) {
+    }
+
+    return null;
+  }
+
 
   Stream<List<Disciplina>> streamDisciplinasDoUsuarioLogado() async* {
     final usuarioId = _authService.currentUser?.uid;

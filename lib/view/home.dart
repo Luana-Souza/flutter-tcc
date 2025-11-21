@@ -5,9 +5,11 @@ import 'package:tcc/service/usuarioService.dart';
 import 'package:tcc/view/tela_login.dart';
 import '../Widget/disciplina_list_tile.dart';
 import '../Widget/inicio_modal.dart';
+import '../Widget/mostrar_disciplina_modal.dart';
 import '../models/disciplinas/disciplina.dart';
 import 'package:flutter_mobx/flutter_mobx.dart'; // 1. Importar o flutter_mobx
 import 'package:get_it/get_it.dart';
+import '../models/usuarios/tipo_usuario.dart';
 import '../service/auth_service.dart';
 import 'home_back.dart';
 class Home extends StatefulWidget {
@@ -107,8 +109,17 @@ class _HomeState extends State<Home> {
         ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {
-          mostrarModalInicio(context);
+        onPressed: () async {
+          final usuarioService = GetIt.I<UsuarioService>();
+          final usuarioLogado = await usuarioService.getUsuarioLogado();
+
+          if (usuarioLogado != null) {
+            if (usuarioLogado.getTipo() == TipoUsuario.aluno) {
+              mostrarModalBuscarDisciplina(context);
+            } else {
+              mostrarModalInicio(context);
+            }
+          }
         },
         ),
       body: Observer(
@@ -131,7 +142,7 @@ class _HomeState extends State<Home> {
 
                 final List<Disciplina> disciplinas = snapshot.data ?? [];
                 if (disciplinas.isEmpty) {
-                  return Center(child: Text('Nenhuma disciplina encontrada.'));
+                  return Center(child: Text('Nenhuma disciplina encontrada. Clique no botão + para adicionar'));
 
                 }
 

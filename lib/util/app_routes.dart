@@ -3,7 +3,7 @@ import 'package:tcc/models/disciplinas/disciplina.dart';
 import 'package:tcc/util/roteador_tela.dart';
 import 'package:tcc/view/tela_disciplina.dart';
 import 'package:tcc/view/tela_login.dart';
-
+import 'package:tcc/view/tela_alunos_matriculados.dart';
 import '../view/home.dart';
 
 class AppRoutes {
@@ -11,6 +11,7 @@ class AppRoutes {
   static const TELA_LOGIN = '/tela-login';
   static const HOME = '/home';
   static const TELA_DISCIPLINA = '/tela-disciplina';
+  static const ALUNOS_MATRICULADOS = '/alunos-matriculados';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
@@ -37,6 +38,13 @@ class AppRoutes {
         }
         return _errorRoute('Argumento inválido para TelaDisciplina');
 
+      case ALUNOS_MATRICULADOS:
+        if (args is Disciplina) {
+          return MaterialPageRoute(
+            builder: (_) => TelaAlunosMatriculados(disciplina: args),
+          );
+        }
+        return _errorRoute('Disciplina necessária para listar alunos');
       default:
         return _errorRoute('Página não encontrada');
     }

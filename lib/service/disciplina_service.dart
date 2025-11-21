@@ -6,6 +6,7 @@ import 'package:tcc/service/usuarioService.dart';
 import 'package:tcc/Widget/detalhes_dialog.dart';
 import '../models/disciplinas/atividade.dart';
 import '../models/disciplinas/avaliacao.dart';
+import '../models/usuarios/aluno.dart';
 import '../models/usuarios/tipo_usuario.dart';
 
 class DisciplinaService {
@@ -49,6 +50,106 @@ class DisciplinaService {
     }
     return disciplina;
   }
+
+
+  Future<List<Aluno>> buscarAlunosDaDisciplina(String disciplinaId) async {
+    try {
+      print("Buscando alunos para a disciplina ID: $disciplinaId");
+
+      // 1. Busca a disciplina atualizada do banco
+      final disciplinaSnapshot = await _disciplinaRepository.collection.doc(disciplinaId).get();
+
+      if (!disciplinaSnapshot.exists) {
+        print("Disciplina não encontrada no banco.");
+        return [];
+      }
+
+      final disciplina = disciplinaSnapshot.data();
+
+      List<String> listaIds = disciplina?.alunosIds ?? [];
+
+      print("IDs de alunos encontrados na disciplina: $listaIds");
+
+      // 2. Extrai a lista de IDs com segurança
+      // Isso previne erros se o campo não existir ou for nulo
+      if (listaIds.isEmpty) {
+        return [];
+      }
+
+      List<Aluno> alunos = [];
+      final usuarioService = GetIt.I<UsuarioService>();
+
+      // 3. Busca os objetos Aluno
+      for (String alunoId in listaIds) {
+        try {
+          final usuario = await usuarioService.getUsuario(alunoId);
+
+          if (usuario != null && usuario is Aluno) {
+            print("Aluno encontrado: ${usuario.nome}");
+            alunos.add(usuario);
+          } else {
+            print("Usuário com ID $alunoId não é um Aluno ou não foi encontrado.");
+          }
+        } catch (e) {
+          print("Erro ao buscar detalhes do aluno $alunoId: $e");
+        }
+      }
+
+      return alunos;
+
+    } catch (e) {
+      print("Erro CRÍTICO ao buscar alunos da disciplina: $e");
+      return [];
+    }
+  }
+
+
+  Future<List<Disciplina>> pesquisarDisciplinas(String termo) async {
+    try {
+
+      final snapshot = await _disciplinaRepository.collection.get();
+
+      final termoFormatado = termo.toLowerCase().trim();
+      final usuarioService = GetIt.I<UsuarioService>();
+
+      List<Disciplina> resultados = [];
+
+      for (var doc in snapshot.docs) {
+        try {
+          final disciplina = doc.data();
+
+          bool match = false;
+
+          if (disciplina.nome.toLowerCase().contains(termoFormatado)) {
+            match = true;
+          }
+          else {
+            final professor = await usuarioService.getUsuario(disciplina.professorId);
+
+            if (professor != null) {
+              final nomeProfessor = professor.nome.toLowerCase();
+
+              if (nomeProfessor.contains(termoFormatado)) {
+                match = true;
+              }
+            }
+          }
+
+          if (match) {
+            resultados.add(disciplina);
+          }
+        } catch (e) {
+        }
+      }
+
+      return resultados;
+
+    } catch (e) {
+      return [];
+    }
+  }
+
+
 
   Stream<List<Disciplina>> streamDisciplinasDoProfessor(String professorId) {
     return _disciplinaRepository.findByStream('professorId', professorId);

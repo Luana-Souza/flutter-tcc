@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:intl/intl.dart'; // Importe o pacote para formatação de data
+import 'package:intl/intl.dart';
 import 'package:tcc/Widget/form_text_field.dart';
 
 import '../models/disciplinas/atividade.dart';

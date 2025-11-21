@@ -73,11 +73,11 @@ class Validar {
   }
 
   static String nome(String nome) {
-    return _campoString("nome", nome, 3, 50);
+    return _campoString("Nome", nome, 3, 50);
   }
 
   static String sobrenome(String sobrenome) {
-    return _campoString("sobrenome", sobrenome, 3, 50);
+    return _campoString("Sobrenome", sobrenome, 3, 50);
   }
 
   static String email(String email) {

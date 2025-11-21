@@ -10,6 +10,7 @@ import '../models/disciplinas/atividade.dart';
 import '../models/disciplinas/avaliacao.dart';
 import '../models/disciplinas/disciplina.dart';
 import '../service/disciplina_service.dart';
+import '../util/app_routes.dart';
 
 class TelaDisciplina extends StatefulWidget {
   final Disciplina disciplina;
@@ -196,7 +197,11 @@ class _TelaDisciplinaState extends State<TelaDisciplina> {
 
               trailing: Icon(Icons.chevron_right),
               onTap: () {
-                // TODO: Implementar navegação para a tela de alunos
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.ALUNOS_MATRICULADOS,
+                  arguments: widget.disciplina,
+                );
               },
             ),
           ),
