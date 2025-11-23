@@ -67,19 +67,25 @@ class _BuscarDisciplinaModalState extends State<BuscarDisciplinaModal> {
 
   void _matricular(Disciplina disciplina) async {
     final alunoId = _authService.currentUser?.uid;
-    if (alunoId == null) return;
+
+    if (alunoId == null || disciplina.id == null) {
+      mostrarSnackBar(context: context, texto: "Erro: Dados inválidos.", isErro: true);
+      return;
+    }
 
     setState(() => _carregando = true);
 
     try {
-      await _disciplinaService.matricularAluno(disciplina, alunoId);
+
+      await _disciplinaService.solicitarMatricula(disciplina.id!, alunoId);
 
       if (mounted) {
         mostrarSnackBar(
             context: context,
-            texto: 'Matriculado em ${disciplina.nome} com sucesso!',
+            texto: 'Solicitação enviada! Aguarde aprovação do professor.',
             isErro: false
         );
+
         Navigator.pop(context);
       }
     } catch (e) {

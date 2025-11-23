@@ -6,22 +6,22 @@ class Atividade extends FirestoreModel{
   final String disciplinaId;
   final String nome;
   final String descricao;
-  final DateTime? dataDeEntrega;
-  final DateTime dataDeEnvio;
+  final DateTime dataDeEntrega; // Prazo definido pelo professor (Obrigatório)
+  final DateTime? dataDeEnvio;  // Data que o aluno enviou (Pode ser nulo)
   final int? credito;
-  final int creditoMinimo;
-  final int creditoMaximo;
+  final int penalidade;
+  final int recompensa;
 
   Atividade({
     String? id,
     required this.disciplinaId,
     required String nome,
     required String descricao,
-    required this.dataDeEnvio,
-    this.dataDeEntrega,
+    required this.dataDeEntrega,
+    this.dataDeEnvio,
     this.credito = 0,
-    this.creditoMinimo = 0,
-    this.creditoMaximo = 0,
+    this.penalidade = 0,
+    this.recompensa = 0,
   }): nome = Validar.nomeAtividade(nome),
         descricao = Validar.descricao(descricao), super (id: id);
 
@@ -30,11 +30,11 @@ class Atividade extends FirestoreModel{
       'disciplinaId': disciplinaId,
       'nome': nome,
       'descricao': descricao,
-      'dataDeEntrega': dataDeEntrega != null ? Timestamp.fromDate(dataDeEntrega!) : null,
-      'dataDeEnvio': Timestamp.fromDate(dataDeEnvio!),
+      'dataDeEntrega': Timestamp.fromDate(dataDeEntrega),
+      'dataDeEnvio': dataDeEnvio != null ? Timestamp.fromDate(dataDeEnvio!) : null,
       'credito': credito,
-      'creditoMinimo': creditoMinimo,
-      'creditoMaximo': creditoMaximo,
+      'penalidade': penalidade,
+      'recompensa': recompensa,
     };
   }
   factory Atividade.fromMap(String id, Map<String, dynamic> map) {
@@ -44,14 +44,14 @@ class Atividade extends FirestoreModel{
       nome: map['nome'] ?? '',
       descricao: map['descricao'] ?? '',
       dataDeEntrega: (map['dataDeEntrega'] as Timestamp? ?? Timestamp.now()).toDate(),
-      dataDeEnvio: (map['dataDeEnvio'] as Timestamp?)!.toDate(),
+      dataDeEnvio: (map['dataDeEnvio'] as Timestamp?)?.toDate(),
       credito: map['credito'],
-      creditoMinimo: map['creditoMinimo'] ?? 0,
-      creditoMaximo: map['creditoMaximo'] ?? 0,
+      penalidade: map['penalidade'] ?? 0,
+      recompensa: map['recompensa'] ?? 0,
     );
   }
   @override
   String toString(){
-    return'Atividade{id: $id, disciplinaId: $disciplinaId, nome: $nome, descricao: $descricao, dataDeEntrega: $dataDeEntrega, dataDeEnvio: $dataDeEnvio, credito: $credito, creditoMinimo: $creditoMinimo, creditoMaximo: $creditoMaximo}';
+    return'Atividade{id: $id, disciplinaId: $disciplinaId, nome: $nome, descricao: $descricao, dataDeEntrega: $dataDeEntrega, dataDeEnvio: $dataDeEnvio, credito: $credito, penalidade: $penalidade, recompensa: $recompensa}';
   }
 }

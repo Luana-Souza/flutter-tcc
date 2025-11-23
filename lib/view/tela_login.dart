@@ -144,8 +144,8 @@ class _TelaLoginState extends State<TelaLogin> {
                           builder: (_) => TextButton(
                             onPressed: viewModel.alternarModo,
                             child: Text(viewModel.isLogin
-                                ? "Não tem uma conta? Cadastre-se"
-                                : "Já tem uma conta? Entre"),
+                                ? "Não tem uma conta? Cadastre-se!"
+                                : "Já tem uma conta? Entre!"),
                           ),
                         )
                       ],

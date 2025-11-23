@@ -6,6 +6,7 @@ import 'avaliacao.dart';
 class Disciplina extends FirestoreModel{
   final String professorId;
   final List<String> alunosIds;
+  List<String> solicitacoesIds;
   final String nome;
   final String turma;
   final String instituicaoId;
@@ -14,6 +15,7 @@ class Disciplina extends FirestoreModel{
     String? id,
     required this.professorId,
     List<String>? alunosIds,
+    this.solicitacoesIds = const [],
     required String nome,
     required  String turma,
     required this.instituicaoId,
@@ -25,6 +27,7 @@ class Disciplina extends FirestoreModel{
     return {
       'professorId': professorId,
       'alunosIds': alunosIds,
+      'solicitacoesIds': solicitacoesIds,
       'nome': nome,
       'turma': turma,
       'instituicao': instituicaoId,
@@ -38,6 +41,7 @@ class Disciplina extends FirestoreModel{
       nome: map['nome'] ?? '',
       turma: map['turma'] ?? 0,
       instituicaoId: map['instituicao'] ?? '',
+      solicitacoesIds: List<String>.from(map['solicitacoesIds'] ?? []),
     );
   }
 }

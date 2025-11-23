@@ -1,9 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
 import 'package:tcc/models/disciplinas/disciplina.dart';
 import 'package:tcc/repositories/firestore_repository.dart';
 import 'package:tcc/service/auth_service.dart';
 import 'package:tcc/service/usuarioService.dart';
-import 'package:tcc/Widget/detalhes_dialog.dart';
 import '../models/disciplinas/atividade.dart';
 import '../models/disciplinas/avaliacao.dart';
 import '../models/usuarios/aluno.dart';
@@ -43,20 +43,80 @@ class DisciplinaService {
     return novaDisciplina;
   }
 
-  Future<Disciplina> matricularAluno(Disciplina disciplina, String alunoId) async {
-    if (!disciplina.alunosIds.contains(alunoId)) {
-      disciplina.alunosIds.add(alunoId);
-      await _disciplinaRepository.save(disciplina);
+  Future<void> solicitarMatricula(String disciplinaId, String alunoId) async {
+    try {
+      final docRef = _disciplinaRepository.collection.doc(disciplinaId);
+
+      await docRef.update({
+        'solicitacoesIds': FieldValue.arrayUnion([alunoId])
+      });
+    } catch (e) {
+      print("Erro ao solicitar matrícula: $e");
+      rethrow;
     }
-    return disciplina;
   }
+
+  Future<void> aprovarMatricula(String disciplinaId, String alunoId) async {
+    try {
+      final docRef = _disciplinaRepository.collection.doc(disciplinaId);
+
+      await _disciplinaRepository.collection.firestore.runTransaction((transaction) async {
+        transaction.update(docRef, {
+          'solicitacoesIds': FieldValue.arrayRemove([alunoId]),
+          'alunosIds': FieldValue.arrayUnion([alunoId]),
+        });
+      });
+    } catch (e) {
+      print("Erro ao aprovar matrícula: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> recusarMatricula(String disciplinaId, String alunoId) async {
+    try {
+      final docRef = _disciplinaRepository.collection.doc(disciplinaId);
+
+      await docRef.update({
+        'solicitacoesIds': FieldValue.arrayRemove([alunoId])
+      });
+    } catch (e) {
+      print("Erro ao recusar matrícula: $e");
+      rethrow;
+    }
+  }
+
+  Future<List<Aluno>> buscarSolicitacoesPendentes(String disciplinaId) async {
+    try {
+      final disciplinaSnapshot = await _disciplinaRepository.collection.doc(disciplinaId).get();
+      if (!disciplinaSnapshot.exists) return [];
+
+      final disciplina = disciplinaSnapshot.data();
+      List<String> listaIds = disciplina?.solicitacoesIds ?? [];
+
+      if (listaIds.isEmpty) return [];
+
+      List<Aluno> alunos = [];
+      final usuarioService = GetIt.I<UsuarioService>();
+
+      for (String alunoId in listaIds) {
+        final usuario = await usuarioService.getUsuario(alunoId);
+        if (usuario != null && usuario is Aluno) {
+          alunos.add(usuario);
+        }
+      }
+      return alunos;
+    } catch (e) {
+      print("Erro ao buscar solicitações: $e");
+      return [];
+    }
+  }
+
 
 
   Future<List<Aluno>> buscarAlunosDaDisciplina(String disciplinaId) async {
     try {
       print("Buscando alunos para a disciplina ID: $disciplinaId");
 
-      // 1. Busca a disciplina atualizada do banco
       final disciplinaSnapshot = await _disciplinaRepository.collection.doc(disciplinaId).get();
 
       if (!disciplinaSnapshot.exists) {
@@ -70,8 +130,6 @@ class DisciplinaService {
 
       print("IDs de alunos encontrados na disciplina: $listaIds");
 
-      // 2. Extrai a lista de IDs com segurança
-      // Isso previne erros se o campo não existir ou for nulo
       if (listaIds.isEmpty) {
         return [];
       }
@@ -79,7 +137,6 @@ class DisciplinaService {
       List<Aluno> alunos = [];
       final usuarioService = GetIt.I<UsuarioService>();
 
-      // 3. Busca os objetos Aluno
       for (String alunoId in listaIds) {
         try {
           final usuario = await usuarioService.getUsuario(alunoId);
@@ -236,6 +293,7 @@ class DisciplinaService {
     }
   }
 
+
   Future<void> deleteAtividade(String disciplinaId, String atividadeId) async {
     try {
       final docRef = _disciplinaRepository.collection
@@ -315,6 +373,34 @@ class DisciplinaService {
     } catch (e) {
       print('Erro ao excluir avaliação no service: $e');
       throw Exception('Não foi possível excluir a avaliação.');
+    }
+  }
+  Future<void> marcarAtividadeComoEntregue({
+    required String disciplinaId,
+    required String atividadeNome,
+    required DateTime dataEnvio,
+  }) async {
+    try {
+      final querySnapshot = await _disciplinaRepository.collection
+          .doc(disciplinaId)
+          .collection('atividades')
+          .where('nome', isEqualTo: atividadeNome)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final docId = querySnapshot.docs.first.id;
+
+        await _disciplinaRepository.collection
+            .doc(disciplinaId)
+            .collection('atividades')
+            .doc(docId)
+            .update({
+          'dataDeEnvio': Timestamp.fromDate(dataEnvio),
+        });
+      }
+    } catch (e) {
+      print("Erro ao marcar atividade como entregue: $e");
     }
   }
 

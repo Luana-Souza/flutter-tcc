@@ -4,6 +4,7 @@ import 'package:tcc/service/auth_service.dart';
 import 'package:tcc/service/disciplina_service.dart';
 import 'package:tcc/service/instituicao_service.dart';
 import 'package:tcc/service/professor_service.dart';
+import 'package:tcc/service/transacao_service.dart';
 import 'package:tcc/service/usuarioService.dart';
 
 Future<void> setupInjection() async{
@@ -17,6 +18,7 @@ Future<void> setupInjection() async{
   getIt.registerLazySingleton<ProfessorService>(() => ProfessorService());
   getIt.registerLazySingleton<DisciplinaService>(() => DisciplinaService());
   getIt.registerLazySingleton<InstituicaoService>(() => InstituicaoService());
+  GetIt.I.registerSingleton<TransacaoService>(TransacaoService());
 
   getIt.registerLazySingleton<UsuarioService>(() => UsuarioService(
     alunoService: getIt<AlunoService>(),
