@@ -6,8 +6,8 @@ class Atividade extends FirestoreModel{
   final String disciplinaId;
   final String nome;
   final String descricao;
-  final DateTime dataDeEntrega; // Prazo definido pelo professor (Obrigatório)
-  final DateTime? dataDeEnvio;  // Data que o aluno enviou (Pode ser nulo)
+  final DateTime dataDeEntrega;
+  final DateTime? dataDeEnvio;
   final int? credito;
   final int penalidade;
   final int recompensa;

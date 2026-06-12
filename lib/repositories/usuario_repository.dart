@@ -35,7 +35,6 @@ class UsuarioRepository {
     return await _repository.findAll();
   }
 
-  //Consulta simples baseada no e-mail.
   Future<bool> existsByEmail(String email) async {
     final query = await FirebaseFirestore.instance
         .collection('usuarios')

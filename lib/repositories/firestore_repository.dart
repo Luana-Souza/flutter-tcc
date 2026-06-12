@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tcc/models/firestore_model.dart';
-import '../models/usuarios/usuario.dart';
 
 
 typedef FromMap<T> = T Function (String id, Map<String, dynamic> data);

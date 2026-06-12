@@ -1,17 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get_it/get_it.dart';
 import 'package:tcc/service/professor_service.dart';
 import 'package:tcc/service/auth_service.dart';
 import 'package:tcc/service/disciplina_service.dart';
-import 'package:tcc/service/professor_service.dart';
 import '../models/disciplinas/disciplina.dart';
 import '../models/usuarios/aluno.dart';
 import '../models/usuarios/tipo_usuario.dart';
 import '../models/usuarios/professor.dart';
 import '../models/usuarios/usuario.dart';
 import 'aluno_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get_it/get_it.dart';
 
 class UsuarioService {
   final AlunoService _alunoService;
@@ -90,7 +86,7 @@ class UsuarioService {
         return professor;
       }
     } catch (e) {
-      print("Não foi possível carregar como Professor (provavelmente é Aluno): $e");
+      //print("Não foi possível carregar como Professor (provavelmente é Aluno): $e");
     }
     try {
       final aluno = await _alunoService.findByUid(uid);

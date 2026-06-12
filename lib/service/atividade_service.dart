@@ -12,10 +12,8 @@ class AtividadeService{
       disciplinaId: disciplinaId,
       nome: atividade.nome,
       descricao: atividade.descricao,
-
       dataDeEntrega: atividade.dataDeEntrega,
       dataDeEnvio: null,
-
       penalidade: atividade.penalidade,
       recompensa: atividade.recompensa,
       credito: 0,

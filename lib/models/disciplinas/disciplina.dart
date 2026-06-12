@@ -1,7 +1,5 @@
 import '../../util/validar.dart';
 import '../firestore_model.dart';
-import 'atividade.dart';
-import 'avaliacao.dart';
 
 class Disciplina extends FirestoreModel{
   final String professorId;

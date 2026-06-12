@@ -115,12 +115,12 @@ class DisciplinaService {
 
   Future<List<Aluno>> buscarAlunosDaDisciplina(String disciplinaId) async {
     try {
-      print("Buscando alunos para a disciplina ID: $disciplinaId");
+      //print("Buscando alunos para a disciplina ID: $disciplinaId");
 
       final disciplinaSnapshot = await _disciplinaRepository.collection.doc(disciplinaId).get();
 
       if (!disciplinaSnapshot.exists) {
-        print("Disciplina não encontrada no banco.");
+       // print("Disciplina não encontrada no banco.");
         return [];
       }
 
@@ -128,7 +128,7 @@ class DisciplinaService {
 
       List<String> listaIds = disciplina?.alunosIds ?? [];
 
-      print("IDs de alunos encontrados na disciplina: $listaIds");
+      //print("IDs de alunos encontrados na disciplina: $listaIds");
 
       if (listaIds.isEmpty) {
         return [];
@@ -238,7 +238,7 @@ class DisciplinaService {
       }).toList();
 
     } catch (e) {
-      print("Erro ao buscar atividades: $e");
+      //print("Erro ao buscar atividades: $e");
       return [];
     }
   }
@@ -250,7 +250,7 @@ class DisciplinaService {
 
       await subCollectionRef.add(atividade.toMap());
     } catch (e) {
-      print('Erro ao adicionar atividade no service: $e');
+      //print('Erro ao adicionar atividade no service: $e');
       throw Exception('Não foi possível criar a atividade.');
     }
   }
@@ -271,7 +271,7 @@ class DisciplinaService {
         }).toList();
       });
     } catch (e) {
-      print("Erro ao criar stream de atividades: $e");
+      //print("Erro ao criar stream de atividades: $e");
       return Stream.value([]);
     }
   }
@@ -288,7 +288,7 @@ class DisciplinaService {
 
       await docRef.update(atividade.toMap());
     } catch (e) {
-      print('Erro ao atualizar atividade no service: $e');
+      //print('Erro ao atualizar atividade no service: $e');
       throw Exception('Não foi possível atualizar a atividade.');
     }
   }
@@ -303,7 +303,7 @@ class DisciplinaService {
 
       await docRef.delete();
     } catch (e) {
-      print('Erro ao excluir atividade no service: $e');
+      //print('Erro ao excluir atividade no service: $e');
       throw Exception('Não foi possível excluir a atividade.');
     }
   }
@@ -326,7 +326,7 @@ class DisciplinaService {
       }).toList();
 
     } catch (e) {
-      print("Erro ao buscar avaliações: $e");
+      //print("Erro ao buscar avaliações: $e");
       throw Exception('Não foi possível buscar as avaliações.');
     }
   }
@@ -339,7 +339,7 @@ class DisciplinaService {
 
       await subCollectionRef.add(avaliacao.toMap());
     } catch (e) {
-      print('Erro ao adicionar avaliação no service: $e');
+      //print('Erro ao adicionar avaliação no service: $e');
       throw Exception('Não foi possível criar a avaliação.');
     }
   }
@@ -357,7 +357,7 @@ class DisciplinaService {
 
       await docRef.update(avaliacao.toMap());
     } catch (e) {
-      print('Erro ao atualizar avaliação no service: $e');
+      //print('Erro ao atualizar avaliação no service: $e');
       throw Exception('Não foi possível atualizar a avaliação.');
     }
   }
@@ -400,7 +400,7 @@ class DisciplinaService {
         });
       }
     } catch (e) {
-      print("Erro ao marcar atividade como entregue: $e");
+      //print("Erro ao marcar atividade como entregue: $e");
     }
   }
 

@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tcc/repositories/firestore_repository.dart';
-
 import '../models/disciplinas/disciplina.dart';
 
 class DisciplinaRepository{

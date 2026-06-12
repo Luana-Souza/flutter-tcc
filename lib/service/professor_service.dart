@@ -1,5 +1,4 @@
 import 'package:get_it/get_it.dart';
-
 import '../models/usuarios/professor.dart';
 import '../repositories/firestore_repository.dart';
 import 'auth_service.dart';

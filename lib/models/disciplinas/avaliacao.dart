@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tcc/models/firestore_model.dart';
-
 import '../../util/validar.dart';
 
 class Avaliacao extends FirestoreModel{
